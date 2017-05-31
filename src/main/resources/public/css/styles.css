@@ -1,0 +1,455 @@
+@import url('//fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,600italic,700,700italic');
+
+body {
+    color: #394263;
+    font-size: 13px;
+    padding: 0px !important;
+    margin: 0px !important;
+    text-rendering: optimizeLegibility;
+    background: rgba( 239,239,239,0.78 );
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+:focus {
+    outline: 0!important
+}
+
+b,
+label,
+strong {
+    font-weight: 600
+}
+
+/**
+CSS Styles for Scrolling the Page Up when it reaches bottom.
+*/
+.cd-top {
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+  position: fixed;
+  bottom: 40px;
+  right: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  /* image replacement properties */
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+  background: rgba(0, 148, 153, 0.8) url(../img/cd-top-arrow.svg) no-repeat center 50%;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: opacity .3s 0s, visibility 0s .3s;
+  -moz-transition: opacity .3s 0s, visibility 0s .3s;
+  transition: opacity .3s 0s, visibility 0s .3s;
+}
+.cd-top.cd-is-visible, .cd-top.cd-fade-out, .no-touch .cd-top:hover {
+  -webkit-transition: opacity .3s 0s, visibility 0s 0s;
+  -moz-transition: opacity .3s 0s, visibility 0s 0s;
+  transition: opacity .3s 0s, visibility 0s 0s;
+}
+.cd-top.cd-is-visible {
+  /* the button becomes visible */
+  visibility: visible;
+  opacity: 1;
+}
+.cd-top.cd-fade-out {
+  /* if the user keeps scrolling down, the button is out of focus and becomes less visible */
+  opacity: .5;
+}
+.no-touch .cd-top:hover {
+  background-color: #009499;
+  opacity: 1;
+}
+@media only screen and (min-width: 768px) {
+  .cd-top {
+    right: 20px;
+    bottom: 20px;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .cd-top {
+    height: 40px;
+    width: 40px;
+    right: 30px;
+    bottom: 30px;
+  }
+}
+
+/*
+Don't show the default search filter of datatable
+*/
+.dataTables_filter{
+  display: none;
+}
+
+#serviceTableHeader a.btn:HOVER{
+  color:rgb(57, 66, 99);
+}
+
+.table thead>tr>th {
+    font-size: 14px;
+    font-weight: 600;
+    background-color: rgb(238, 238, 238) ;
+}
+
+
+.panel-heading {
+    border-bottom: 1px solid #eaedf1;
+    background: #f9fafc;
+    font-size: 16px;
+    font-weight: 600;
+    color:rgb(57, 66, 99);    
+}
+
+.panel-heading .svcBtn{
+  position: relative;
+  top:-6px;
+  margin-right: 10px;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    /*width: 60px;*/
+    width: auto;
+    display: inline-block;
+    border-radius: 3px;
+    color:rgb(57, 66, 99);
+    font-weight: 600;
+    height: 34px;
+}
+
+.form-control {
+    font-size: 13px;
+    padding: 6px 8px;
+    margin: 1px 0;
+    color: #394263;
+    border-color: #dbe1e8;
+}
+
+.form-control, .gallery a img, .gallery img, .gallery-image img, a[data-toggle=lightbox-image] img {
+    max-width: 100%;
+}
+
+#wileyImg{
+  margin-bottom: 20px;
+}
+
+#filterrow div.rounded {
+  /*border: 1px solid #ccc;*/
+  border-radius: 4px;
+  padding: 2px;
+}
+
+#filterrow th{
+  padding: 0px;
+  border:none;
+}
+
+#filterrow input{
+  border:  none;
+  background: #FFF;
+  font-weight: normal;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.svcPanel{
+  border-radius: 0px;
+  border: 2px solid #368ee0;
+}
+.svcPanel-body{
+  padding: 0px;
+  /*padding: 8px 15px 15px;*/
+}
+
+
+
+.pagination>li>a,
+.pagination>li>span {
+    color: #65a8e7;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: none!important;
+    border-radius: 25px!important
+}
+
+.pagination>.active>a,
+.pagination>.active>a:focus,
+.pagination>.active>a:hover,
+.pagination>.active>span,
+.pagination>.active>span:focus,
+.pagination>.active>span:hover {
+    background-color: #65a8e7
+}
+
+.pager>li>a,
+.pager>li>span {
+    border-color: #eaedf1
+}
+
+.pager>li>a:hover,
+.pagination>li>a:hover {
+    background-color: #65a8e7;
+    border-color: #65a8e7;
+    color: #fff
+}
+
+.pagination .next i, .pagination .previous i{
+  font-weight: bold;
+}
+
+.pagination>li>a, .pagination>li>span {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+/*
+.dataTables_wrapper .row {
+    margin: 0px;
+}
+
+
+.dataTables_wrapper>div {
+    background-color: #fff;
+    padding: 8px 0 5px;
+    width: auto;
+    border: 1px solid #eaedf1;
+    border-top-width: 0;
+}
+*/
+#serviceTable_length{
+  width: auto;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0px 6px;
+  color: rgb(57, 66, 99);
+  font-size: 12px;
+  font-weight: 600;
+  height: 22px;
+}
+
+#serviceTable_length:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+}
+
+#serviceTable_wrapper{
+  background-color: #fff;
+}
+
+#serviceTable_wrapper div.row:last-child{
+  /* background-color: #f9fafc; */
+  background-color: #edf3f8;
+  padding: 4px 0px 1px 0px;
+  margin: 0px;
+}
+
+th.appliedFilter{
+  font-style: italic;
+  color:#1f76c7;
+}
+
+
+/**
+styles for service-details.html
+*/
+
+#serviceDetails .form-control[disabled],#serviceDetails  .form-control[readonly],#serviceDetails  fieldset[disabled] .form-control{
+  background-color: #fff;
+}
+
+#serviceDetails textarea {
+  padding: 6px 12px;
+  resize: none;
+}
+#serviceDetails span.form-control {
+  border:none;
+  box-shadow: none;
+  background-color: inherit;
+}
+
+#serviceDetails div.svc-txtArea{
+  padding: 6px 12px 12px 12px;
+}
+#serviceDetails legend{
+  /*background-color: #d3e6f8;*/
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+#serviceDetails legend[data-toggle="collapse"]:after
+{
+  font-family: 'Glyphicons Halflings';
+  content: "\e259";
+  float: right;
+  color:rgb(57, 66, 99);
+  padding-right: 6px;
+}
+
+#serviceDetails legend[data-toggle="collapse"].collapsed:after
+{
+  content: "\e258";
+}
+
+#flowDiagram{
+  margin: 10px 0px 0px 8px;
+}
+
+.svcPanel-heading{
+  background-color: #368ee0;
+  color: white;
+  border-radius:0px;
+}
+
+.svcBtn a{
+  color:white;
+}
+
+.dataTables_scroll{
+  margin-top: -9px;
+}
+
+.svcContainer{
+	padding-left:0px;
+	padding-right:0px;
+}
+
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('../img/loading.gif') 
+                50% 50% 
+                no-repeat;
+}
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal {
+    display: block;
+}
+
+/**
+Hiding the fileupload and opening it on click of Browse button.
+*/
+
+#fileupload {
+    border: 0;
+    position: absolute;
+    cursor: pointer;
+    top: -2px;
+    right: -2px; 
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+    opacity: 0;
+    font-size: 1000px; 
+}
+
+input[type="file"] {
+    align-items: baseline;
+    color: inherit;
+    text-align: start;
+}
+
+input[type="hidden"], input[type="image"], input[type="file"] {
+    -webkit-appearance: initial;
+    background-color: initial;
+    padding: initial;
+    border: initial;
+}
+
+td.dt-center { text-align: center; }
+td.dt-right { text-align: right; }
+
+td.error-cell, td.warning-cell{
+    text-decoration:underline;
+    color:#FFF;
+    width: 100%;
+    height: 100%;
+}
+
+td.error-cell
+{
+    background-color:#ff3a33;
+}
+td.warning-cell
+{
+    background-color:#ff9933;
+}
+
+td.error-cell > a, td.warning-cell > a{
+    display: block;
+    height: 100%;
+    width: 100%;
+    color:#FFFFFF;
+}
+
+/**
+Styles for Information Dialog
+ */
+.ui-widget-header{
+    border:none;
+}
+.ui-dialog , .ui-dialog .ui-dialog-titlebar{
+    background-color: #368ee0;
+    color:white;
+}
+.ui-dialog .ui-dialog-buttonpane{
+    margin-top: 0px;
+    background-color: #edf3f8;
+}
+.ui-dialog .ui-dialog-content{
+    background-color: #ffffff;
+    padding: 12px 8px 12px 12px;
+    overflow:hidden;
+}
+
+#fileupload_wrapper span{
+    background-color: #368ee0;
+    padding: .5em;
+    border-radius: 3px;
+    color: #ffffff;
+}
+
+#fileupload_wrapper input{
+    background-color: #ffffff;
+}
+
+.ui-button{
+    padding: .5em 1em;
+}
+#formMsg span{
+    font-size: 15px;
+}
+
+#formMsg span:first-of-type{
+    font-size: 28px;
+    margin-right: 8px;
+}
+#formMsg span.glyphicon-warning-sign{
+    color: #EE7E58;
+}
+#formMsg span.glyphicon-ok-circle{
+    color:#75BC7F;
+}
+
+a.btn.buttons-excel{
+    display:none;
+}
+
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}

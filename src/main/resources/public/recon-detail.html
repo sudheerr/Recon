@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Error Report</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/style-finished.css">
+    <link rel="stylesheet" href="css/wiley.css">
+
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!--
+            Might need to Uncomment it, when bootstrap plugins are being used -->
+    <script type="text/javascript"
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Scripts to download table as excel -->
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+
+    <!--  To show ellipsis on datatable when text content is beyond the cell
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/ellipsis.js"></script>
+            -->
+<style>
+#serviceDetails div.panel-body{
+    padding-bottom: 0px;
+}
+header#serviceDetailsHeader:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e259";
+    float: right;
+    color: #FFFFFF;
+    padding-right: 6px;
+}
+header#serviceDetailsHeader.collapsed:after{
+    content: "\e258";
+}
+</style>
+</head>
+<body>
+<div id="header"></div>
+<div class="container svcContainer">
+    <div class="row">
+        <div id="serviceDetails" >
+            <section class="panel svcPanel">
+                <header id="serviceDetailsHeader" data-toggle="collapse" data-target="#serviceDetailsBody" class="panel-heading svcPanel-heading">
+                    <strong>Interface Details</strong>
+                </header>
+                <div id="serviceDetailsBody" class="panel-body collapse in">
+                    <!--<fieldset class="form-group">-->
+                        <!--<div id="details">-->
+                        <div class="form-inline">
+                            <div class="form-group col-sm-4">
+                                <label class="control-label">Start Date:</label>
+                                <div class="">
+                                    <span class="form-control"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-5">
+                                <label class="control-label">Source:</label>
+                                <div class="">
+                                    <span class="form-control"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <label class="control-label">Target:</label>
+                                <div class="">
+                                    <span class="form-control"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-inline">
+                            <div class="form-group col-sm-4">
+                                <label class="control-label">End Date:</label>
+                                <div class="">
+                                    <span class="form-control"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-5">
+                                <label class="control-label">Interface Name:</label>
+                                <div class="">
+                                    <span class="form-control"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <label class="control-label">WRICEF:</label>
+                                <div class="">
+                                    <span class="form-control"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!--</div>-->
+                    <!--</fieldset>-->
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel svcPanel">
+            <div class="panel-body svcPanel-body">
+                <header id="serviceTableHeader"
+                        class="panel-heading svcPanel-heading">
+                    <strong><span></span> Error Report</strong>
+                    <select id="serviceTable_length" name="serviceTable_length" aria-controls="serviceTable" class="pull-right"><option value="10">10</option><option selected value="25">25</option><option value="50">50</option><option value="-1">All</option></select>
+               </header>
+
+                <table id="serviceTable"
+                       class=" display table table-bordered table-striped  table-hover dataTable">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer"></div>
+<a class="cd-top" href="#0">Top</a>
+<div class="modal">
+    <!-- Place at bottom of page -->
+</div>
+<div id="reconDialog" title="Error" style="display: none;">
+    <p></p>
+</div>
+<script type="text/javascript" charset="utf8" src="js/common.js"></script>
+<script type="text/javascript" charset="utf8" src="js/appDetails.js"></script>
+</body>
+</html>
