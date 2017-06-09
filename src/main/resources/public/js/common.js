@@ -32,7 +32,9 @@ $(document).ready(function($){
         }).done(function (data) {
             if(data){
                 $('#user-name-label').text(data.userName);
-            }
+            }/*else{
+                $('#user-name-label').text('John Cozen');
+            }*/
         });
     });
 

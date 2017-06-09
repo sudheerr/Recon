@@ -4,24 +4,22 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import static com.wiley.ApplicationConstants.SDF_YYYY_M_MDD;
 
 /**
  * Created by ravuri on 5/15/17.
  */
-public class ResultsMapper implements RowMapper {
-
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+public class ReconResultsMapper implements RowMapper<ReconResult> {
 
     @Override
-    public Object mapRow(ResultSet rs, int i) throws SQLException {
+    public ReconResult mapRow(ResultSet rs, int i) throws SQLException {
         ReconResult result = new ReconResult();
         result.setId(rs.getInt(1));
         result.setWricef(rs.getString(2));
         result.setSource(rs.getString(3));
         result.setTarget(rs.getString(4));
-        result.setStartDate(simpleDateFormat.format(rs.getDate(5)));
-        result.setEndDate(simpleDateFormat.format(rs.getDate(6)));
+        result.setStartDate(SDF_YYYY_M_MDD.format(rs.getDate(5)));
+        result.setEndDate(SDF_YYYY_M_MDD.format(rs.getDate(6)));
         result.setServiceName(rs.getString(7));
         result.setInterfaceName(rs.getString(8));
         result.setSrcTotal(rs.getInt(9));

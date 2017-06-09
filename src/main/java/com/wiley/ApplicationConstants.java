@@ -1,14 +1,23 @@
 package com.wiley;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by ravuri on 5/30/17.
+ * Created by sravuri on 5/30/17.
  */
 public class ApplicationConstants {
 
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private ApplicationConstants(){}
 
-    static SimpleDateFormat sdf_other = new SimpleDateFormat("yyyyMMdd");
+    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
+    public static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyyMMdd");
+
+    public static final List<String> ORDER_WRICEFS = new ArrayList<String>(){{
+        add("I0230.6");
+        add("I0230.7");
+        add("I0230.8");
+    }};
 }

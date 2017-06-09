@@ -1,10 +1,9 @@
 package com.wiley;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- * Created by ravuri on 5/26/17.
+ * Created by sravuri on 5/26/17.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DynamicRow {

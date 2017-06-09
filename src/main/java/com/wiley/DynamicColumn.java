@@ -1,7 +1,7 @@
 package com.wiley;
 
 /**
- * Created by ravuri on 5/26/17.
+ * Created by sravuri on 5/26/17.
  */
 public class DynamicColumn {
     private String title;
@@ -22,9 +22,7 @@ public class DynamicColumn {
                 '}';
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() {  return title; }
     public void setTitle(String title) {
         this.title = title;
     }

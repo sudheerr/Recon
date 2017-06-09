@@ -308,11 +308,14 @@ styles for service-details.html
   margin-top: -9px;
 }
 
+/*.svcContainer{*/
+	/*padding-left:0px;*/
+	/*padding-right:0px;*/
+/*}*/
 .svcContainer{
-	padding-left:0px;
-	padding-right:0px;
+    padding-left:20px;
+    padding-right:20px;
 }
-
 
 /* Start by setting display:none to make this hidden.
    Then we position it in relation to the viewport window
@@ -388,6 +391,8 @@ td.error-cell
 td.warning-cell
 {
     background-color:#ff9933;
+    text-decoration:none;
+    /*font-weight: 700;*/
 }
 
 td.error-cell > a, td.warning-cell > a{

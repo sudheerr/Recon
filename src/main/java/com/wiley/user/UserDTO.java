@@ -1,4 +1,4 @@
-package com.wiley;
+package com.wiley.user;
 
 public class UserDTO {
 

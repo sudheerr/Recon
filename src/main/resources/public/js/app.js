@@ -10,14 +10,13 @@ $(document).ready(function() {
     //     $(this).html('<div class="rounded"><input style="width:100%" type="text"/></div>');
     // });
 
-
     var start = moment().subtract(1, 'days');
     var end = moment();
     var minDate= moment().subtract(100, 'days');
-    function cb(start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    }
 
+    function cb(startArg, endArg) {
+        $('#reportrange span').html(startArg.format('MMMM D, YYYY') + ' - ' + endArg.format('MMMM D, YYYY'));
+    }
 
     $('#reportrange').daterangepicker({
         startDate: start,
@@ -63,13 +62,13 @@ $(document).ready(function() {
             { data: 'eisTotal', defaultContent: '' },
             { data: 'eisSuccess', defaultContent: '' },
             { data: 'eisFailure', defaultContent:''},
-            { data: 'flowDirection', defaultContent: '' },
+            // { data: 'flowDirection', defaultContent: '' },
             { data: 'sapTotal',  defaultContent: '' },
             { data: 'sapSuccess',  defaultContent: '' },
             { data: 'sapFailure', defaultContent: '' }
         ],
 		columnDefs : [{
-		    "targets" : 13,
+		    "targets" : 12,
         	className:'dt-right',
 			fnCreatedCell : function(nTd,
 					sData, oData, iRow, iCol) {
@@ -103,16 +102,17 @@ $(document).ready(function() {
 				}
 			}
 		},
-		{	"targets": 10,
-		    className:"dt-center",
-            "render": function ( data, type, row ) {
-            	if(data && data.indexOf('I')===0){
-            		  return '<span class="glyphicon glyphicon-arrow-right"></span>';
-            	}else{
-            		 return '<span class="glyphicon glyphicon-arrow-left"></span>';
-            	}
-            }
-        },{
+        // {	"targets": 10,
+		 //    className:"dt-center",
+        //     "render": function ( data, type, row ) {
+        //     	if(data && data.indexOf('I')===0){
+        //     		  return '<span class="glyphicon glyphicon-arrow-right"></span>';
+        //     	}else{
+        //     		 return '<span class="glyphicon glyphicon-arrow-left"></span>';
+        //     	}
+        //     }
+        // },
+            {
             targets: 1,
             render: $.fn.dataTable.render.ellipsis(20)
         },{
@@ -138,7 +138,7 @@ $(document).ready(function() {
             targets: 8,
             className:'dt-right'
         },{
-            targets: 11,
+            targets: 10,
             className:'dt-right',
             fnCreatedCell : function(nTd,sData, oData, iRow, iCol) {
                 if (oData.eisSuccess !== oData.sapTotal) {
@@ -147,7 +147,7 @@ $(document).ready(function() {
                 }
             }
         },{
-            targets: 12,
+            targets: 11,
             className:'dt-right'
         }
 		],
@@ -215,7 +215,6 @@ $(document).ready(function() {
             header.addClass('appliedFilter');
         }
     });
-
 
     $("#serviceTable_length").on('change', function() {
         serviceTable.page.len( $(this).val() ).draw();

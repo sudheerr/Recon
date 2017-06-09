@@ -61,7 +61,7 @@ nav li:hover li {
  
 nav li:hover a { 
  /* background: #FFFFFF;*/ 
-  background:#0431B4
+  background:#0431B4;
   height:30px; /* Height of lower-level nav items is shorter than main level */
 }
  

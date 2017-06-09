@@ -52,9 +52,9 @@ $(document).ready(function(ReconView) {
             var formControls = $('#serviceDetails .form-control');
             formControls[0].textContent = response.startDate;
             formControls[1].textContent = response.source;
-            formControls[2].textContent = response.target;
+            formControls[2].textContent = response.interfaceName;
+            formControls[4].textContent = response.target;
             formControls[3].textContent = response.endDate;
-            formControls[4].textContent = response.interfaceName;
             formControls[5].textContent = response.wricef;
 
             var serviceTable = $('#serviceTable').DataTable({
@@ -80,6 +80,11 @@ $(document).ready(function(ReconView) {
             $("#serviceTable_length").on('change', function() {
                 serviceTable.page.len( $(this).val() ).draw();
             });
+
+
+            setTimeout(function () {
+                $( "#serviceDetailsBody" ).collapse();
+            }, 2000);
         }
     });
 
