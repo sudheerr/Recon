@@ -1,12 +1,12 @@
-package com.wiley.service;
+package com.wiley.dao;
 
 import com.wiley.DynamicRow;
 import com.wiley.ReconDetailResponse;
+import com.wiley.service.UtilService;
 import oracle.jdbc.OracleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wiley.ApplicationConstants.SDF;
+import static com.wiley.ApplicationConstants.*;
 
 /**
  * Created by sravuri on 6/1/17.
@@ -31,15 +31,13 @@ import static com.wiley.ApplicationConstants.SDF;
  * I0230.8  CSS
  */
 @Service
-public class OrderService {
-    private UtilService utilService;
-    private JdbcTemplate jdbcTemplate;
+public class OrdersDAO extends GenericDAO{
+    private final UtilService utilService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrdersDAO.class);
 
     @Autowired
-    public OrderService(JdbcTemplate jdbcTemplate, UtilService utilService) {
-        this.jdbcTemplate = jdbcTemplate;
+    public OrdersDAO(UtilService utilService) {
         this.utilService = utilService;
     }
 
@@ -64,12 +62,12 @@ public class OrderService {
             return null;
         }
 
-        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
-        simpleJdbcCall.withSchemaName("eisadmin").withCatalogName("recon_order_pkg").withProcedureName("recon_order_errors");
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
+        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_order_pkg").withProcedureName("recon_order_errors");
 
-        simpleJdbcCall.declareParameters(new SqlParameter("startDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("endDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("errcode", OracleTypes.VARCHAR));
+        simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(ERROR_CODE, OracleTypes.VARCHAR));
         simpleJdbcCall.declareParameters(new SqlParameter("srcSystem", OracleTypes.VARCHAR));
 
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
@@ -89,9 +87,9 @@ public class OrderService {
         }));
 
         MapSqlParameterSource in = new MapSqlParameterSource();
-        in.addValue("startDate", startDate);
-        in.addValue("endDate", endDate);
-        in.addValue("errcode", errorSrc);
+        in.addValue(START_DATE, startDate);
+        in.addValue(END_DATE, endDate);
+        in.addValue(ERROR_CODE, errorSrc);
         in.addValue("srcSystem", srcSystem);
 
         List<DynamicRow> rows = simpleJdbcCall.executeObject(List.class, in);

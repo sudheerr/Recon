@@ -1,13 +1,19 @@
 package com.wiley;
 
 
-import com.wiley.service.*;
+import com.wiley.dao.OrdersDAO;
+import com.wiley.dao.PDMSOrdersDAO;
+import com.wiley.dao.ProductsDAO;
+import com.wiley.dao.ReconDAO;
+import com.wiley.service.UtilService;
 import com.wiley.user.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
@@ -20,37 +26,46 @@ import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
 public class ReconController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReconController.class);
 
-    private ReconService reconService;
+    private ReconDAO reconDAO;
 
-    private ProductsService productsService;
+    private ProductsDAO productsDAO;
 
-    private OrderService orderService;
+    private OrdersDAO ordersDAO;
 
-    private PDMSOrderService pdmsOrderService;
+    private PDMSOrdersDAO pdmsOrdersDAO;
 
     private UtilService utilService;
 
-    public UtilService getUtilService() {
-        return utilService;
+    @Autowired
+    public void setReconDAO(ReconDAO reconDAO) {
+        this.reconDAO = reconDAO;
     }
+
+    @Autowired
+    public void setProductsDAO(ProductsDAO productsDAO) {
+        this.productsDAO = productsDAO;
+    }
+
+    @Autowired
+    public void setOrdersDAO(OrdersDAO ordersDAO) {
+        this.ordersDAO = ordersDAO;
+    }
+
+    @Autowired
+    public void setPdmsOrdersDAO(PDMSOrdersDAO pdmsOrdersDAO) {
+        this.pdmsOrdersDAO = pdmsOrdersDAO;
+    }
+
     @Autowired
     public void setUtilService(UtilService utilService) {
         this.utilService = utilService;
     }
 
-    @Autowired
-    private ReconController(ReconService reconService, ProductsService productsService, OrderService orderService,  PDMSOrderService pdmsOrderService) {
-        this.reconService = reconService;
-        this.productsService = productsService;
-        this.orderService = orderService;
-        this.pdmsOrderService = pdmsOrderService;
-    }
-
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     @ResponseBody
-    public UserDTO getUser() {
-        //TODO
-        return null;
+    public UserDTO getUserDetails(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        return (UserDTO) session.getAttribute(ApplicationConstants.USER_DTO);
     }
 
     /**
@@ -71,7 +86,7 @@ public class ReconController {
             e.printStackTrace();
             return null;
         }
-        return reconService.fetchResults(startDate, endDate);
+        return reconDAO.fetchResults(startDate, endDate);
     }
 
     @RequestMapping(value = "/details/{wricef}/{errorsSrc}/startDate/{startDate}/endDate/{endDate}", method = RequestMethod.GET)
@@ -91,19 +106,19 @@ public class ReconController {
         } catch (ParseException e) {
             LOGGER.error(e.getMessage());
 
-            response.setErrorFlag(true);
+            response.errorFlag = true;
             response.setErrorMsg("Start and End Date not properly formatted. Proper format: YYYYMMDD.");
             return response;
         }
 //        try {
             if (wricef.equals("I0203.1")) {
-                return productsService.getProductDetails(sDate, eDate, errorsSrc);
+                return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
             } else if (wricef.equals("I0343")) {
-                return pdmsOrderService.getOrderDetails(sDate, eDate, errorsSrc);
+                return pdmsOrdersDAO.getOrderDetails(sDate, eDate, errorsSrc);
             } else if (ORDER_WRICEFS.contains(wricef)) {
-                return orderService.getOrderDetails(sDate, eDate, errorsSrc, wricef);
+                return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef);
             } else {
-                response.setErrorFlag(true);
+                response.errorFlag= true;
                 response.setErrorMsg("Unsupported WRICEF : " + wricef);
                 return response;
             }

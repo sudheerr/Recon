@@ -4,7 +4,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import static com.wiley.ApplicationConstants.SDF_YYYY_M_MDD;
+
+import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
 
 /**
  * Created by ravuri on 5/15/17.
@@ -18,8 +19,8 @@ public class ReconResultsMapper implements RowMapper<ReconResult> {
         result.setWricef(rs.getString(2));
         result.setSource(rs.getString(3));
         result.setTarget(rs.getString(4));
-        result.setStartDate(SDF_YYYY_M_MDD.format(rs.getDate(5)));
-        result.setEndDate(SDF_YYYY_M_MDD.format(rs.getDate(6)));
+        result.setStartDate(SDF_YYYYMMDD.format(rs.getDate(5)));
+        result.setEndDate(SDF_YYYYMMDD.format(rs.getDate(6)));
         result.setServiceName(rs.getString(7));
         result.setInterfaceName(rs.getString(8));
         result.setSrcTotal(rs.getInt(9));

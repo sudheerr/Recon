@@ -1,36 +1,40 @@
-package com.wiley.service;
+package com.wiley.dao;
 
 import com.wiley.DynamicRow;
 import com.wiley.ReconDetailResponse;
+import com.wiley.service.UtilService;
 import oracle.jdbc.OracleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SqlOutParameter;
+import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wiley.ApplicationConstants.SDF;
+import static com.wiley.ApplicationConstants.*;
 
 /**
  * Created by sravuri on 5/30/17.
  */
 @Service
-public class ProductsService {
+public class ProductsDAO extends GenericDAO {
 
-    private JdbcTemplate jdbcTemplate;
-    private UtilService utilService;
+    private final UtilService utilService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductsDAO.class);
 
     @Autowired
-    private ProductsService(JdbcTemplate jdbcTemplate, UtilService utilService) {
-        this.jdbcTemplate = jdbcTemplate;
+    private ProductsDAO(UtilService utilService) {
         this.utilService = utilService;
     }
 
@@ -39,12 +43,12 @@ public class ProductsService {
 
         LOGGER.info("parameters passed : startDate = [" + startDate + "], endDate = [" + endDate + "], errorSrc = [" + errorSrc + "]");
 
-        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
-        simpleJdbcCall.withSchemaName("eisadmin").withCatalogName("recon_product_pkg").withProcedureName("recon_product_errors");
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
+        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_product_pkg").withProcedureName("recon_product_errors");
 
-        simpleJdbcCall.declareParameters(new SqlParameter("startDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("endDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("errcode", OracleTypes.VARCHAR));
+        simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(ERROR_CODE, OracleTypes.VARCHAR));
 
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
             public DynamicRow mapRow(ResultSet rs, int i) throws SQLException {
@@ -65,9 +69,9 @@ public class ProductsService {
 
 
         MapSqlParameterSource in = new MapSqlParameterSource();
-        in.addValue("startDate", startDate);
-        in.addValue("endDate", endDate);
-        in.addValue("errcode", errorSrc);
+        in.addValue(START_DATE, startDate);
+        in.addValue(END_DATE, endDate);
+        in.addValue(ERROR_CODE, errorSrc);
 
         List<DynamicRow> rows = simpleJdbcCall.executeObject(List.class, in);
 

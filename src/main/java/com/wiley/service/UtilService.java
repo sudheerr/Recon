@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.wiley.ApplicationConstants.SDF_YYYY_M_MDD;
+import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
 
 /**
  * Created by sravuri on 6/7/17.
@@ -28,14 +28,14 @@ public class UtilService {
         }
 
         ReconDetailResponse response = new ReconDetailResponse();
-        response.setColumns(dynCols);
-        response.setData(rows);
-        response.setStartDate(startDate);
-        response.setEndDate(endDate);
-        response.setInterfaceName(interfaceName);
-        response.setSource(source);
-        response.setTarget(target);
-        response.setWricef(wricef);
+        response.columns = dynCols;
+        response.data = rows;
+        response.startDate = startDate;
+        response.endDate = endDate;
+        response.interfaceName= interfaceName;
+        response.source = source;
+        response.target= target;
+        response.wricef = wricef;
 
         return  response;
     }
@@ -43,7 +43,7 @@ public class UtilService {
     public Timestamp getEndofDay(String date) throws ParseException{
         //Fetching records till end of day.
         Calendar cal = Calendar.getInstance();
-        cal.setTime(SDF_YYYY_M_MDD.parse(date));
+        cal.setTime(SDF_YYYYMMDD.parse(date));
 
         cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
         cal.set(Calendar.MINUTE, cal.getMaximum(Calendar.MINUTE));
@@ -54,6 +54,6 @@ public class UtilService {
     }
 
     public Timestamp getStartofDay(String date) throws ParseException{
-        return  new Timestamp(SDF_YYYY_M_MDD.parse(date).getTime());
+        return  new Timestamp(SDF_YYYYMMDD.parse(date).getTime());
     }
 }

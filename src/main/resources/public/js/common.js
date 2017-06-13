@@ -9,7 +9,7 @@ var ReconView = (function() {
         var sURLVariables = sPageURL.split('&');
         for (var i = 0; i < sURLVariables.length; i++) {
             var sParameterName = sURLVariables[i].split('=');
-            if (sParameterName[0] == sParam) {
+            if (sParameterName[0] === sParam) {
                 return sParameterName[1];
             }
         }
@@ -32,9 +32,7 @@ $(document).ready(function($){
         }).done(function (data) {
             if(data){
                 $('#user-name-label').text(data.userName);
-            }/*else{
-                $('#user-name-label').text('John Cozen');
-            }*/
+            }
         });
     });
 

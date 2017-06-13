@@ -1,10 +1,10 @@
-package com.wiley.service;
+package com.wiley.dao;
 
 import com.wiley.DynamicRow;
 import com.wiley.ReconDetailResponse;
+import com.wiley.service.UtilService;
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
@@ -19,30 +19,28 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wiley.ApplicationConstants.SDF;
+import static com.wiley.ApplicationConstants.*;
 
 /**
  * Created by sravuri on 6/8/2017.
  */
 @Service
-public class PDMSOrderService {
-    private UtilService utilService;
-    private JdbcTemplate jdbcTemplate;
+public class PDMSOrdersDAO extends GenericDAO{
+    private final UtilService utilService;
 
     @Autowired
-    private PDMSOrderService(JdbcTemplate jdbcTemplate, UtilService utilService) {
-        this.jdbcTemplate = jdbcTemplate;
+    private PDMSOrdersDAO(UtilService utilService) {
         this.utilService = utilService;
     }
 
     public ReconDetailResponse getOrderDetails(Timestamp startDate, Timestamp endDate, String errorSrc){
 
-        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
-        simpleJdbcCall.withSchemaName("eisadmin").withCatalogName("recon_pdms_order_pkg").withProcedureName("recon_pdms_order_errors");
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
+        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_pdms_order_pkg").withProcedureName("recon_pdms_order_errors");
 
-        simpleJdbcCall.declareParameters(new SqlParameter("startDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("endDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("errcode", OracleTypes.VARCHAR));
+        simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(ERROR_CODE, OracleTypes.VARCHAR));
 
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
             public DynamicRow mapRow(ResultSet rs, int i) throws SQLException {
@@ -61,9 +59,9 @@ public class PDMSOrderService {
         }));
 
         MapSqlParameterSource in = new MapSqlParameterSource();
-        in.addValue("startDate", startDate);
-        in.addValue("endDate", endDate);
-        in.addValue("errcode", errorSrc);
+        in.addValue(START_DATE, startDate);
+        in.addValue(END_DATE, endDate);
+        in.addValue(ERROR_CODE, errorSrc);
 
         List<DynamicRow> rows = simpleJdbcCall.executeObject(List.class, in);
         List<String> columns = new ArrayList<>();

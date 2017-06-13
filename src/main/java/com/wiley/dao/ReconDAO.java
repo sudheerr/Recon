@@ -1,7 +1,8 @@
-package com.wiley.service;
+package com.wiley.dao;
 
 import com.wiley.ReconResult;
 import com.wiley.ReconResultsMapper;
+import com.wiley.service.UtilService;
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,15 +15,17 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
 
-@Service
-public class ReconService {
+import static com.wiley.ApplicationConstants.EISADMIN;
+import static com.wiley.ApplicationConstants.END_DATE;
+import static com.wiley.ApplicationConstants.START_DATE;
 
-    private JdbcTemplate jdbcTemplate;
-    private UtilService utilService;
+@Service
+public class ReconDAO extends GenericDAO{
+
+    private final UtilService utilService;
 
     @Autowired
-    public ReconService(JdbcTemplate jdbcTemplate, UtilService utilService) {
-        this.jdbcTemplate = jdbcTemplate;
+    public ReconDAO(JdbcTemplate jdbcTemplate, UtilService utilService) {
         this.utilService = utilService;
     }
 
@@ -36,7 +39,7 @@ public class ReconService {
         args[0]=startDate;
         args[1]= endDate;
 
-        List<ReconResult> results = jdbcTemplate.query(FETCH_RESULTS, args, new ReconResultsMapper());
+        List<ReconResult> results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultsMapper());
 
         if(results.size()==0){
         /*  Perform Dynamic Query
@@ -48,7 +51,7 @@ public class ReconService {
                 sDate =utilService.getStartofDay(startDate);
                 eDate =utilService.getEndofDay(endDate);
                 loadResultsData(sDate,eDate);
-                results = jdbcTemplate.query(FETCH_RESULTS, args, new ReconResultsMapper());
+                results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultsMapper());
 
             }catch (ParseException e){
                 //TODO Handle Error
@@ -59,15 +62,15 @@ public class ReconService {
     }
 
     public void loadResultsData(Timestamp startDate, Timestamp endDate){
-        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
-        simpleJdbcCall.withSchemaName("eisadmin").withCatalogName("recon_pkg").withProcedureName("recon_populate_results");
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
+        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_pkg").withProcedureName("recon_populate_results");
 
-        simpleJdbcCall.declareParameters(new SqlParameter("startDate", OracleTypes.TIMESTAMP));
-        simpleJdbcCall.declareParameters(new SqlParameter("endDate", OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
+        simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));
 
         MapSqlParameterSource in = new MapSqlParameterSource();
-        in.addValue("startDate", startDate);
-        in.addValue("endDate", endDate);
+        in.addValue(START_DATE, startDate);
+        in.addValue(END_DATE, endDate);
 
         simpleJdbcCall.execute(in);
     }

@@ -23,6 +23,9 @@ $(document).ready(function() {
         endDate: start,
         maxDate:start,
         minDate:minDate,
+        dateLimit:{
+            days:6
+        },
         ranges: {
             'Yesterday': [start, start],
             'Week To Day': [moment().startOf('week'), moment().endOf('week')],
@@ -38,7 +41,7 @@ $(document).ready(function() {
         serviceTable.ajax.url(url).load();
     });
 
-    var url = ReconView.getContextPath()+'/webapi/results/startDate/'+start.format('YYYYMMDD')+'/endDate/'+start.format('YYYYMMDD')
+    var url = ReconView.getContextPath()+'/webapi/results/startDate/'+start.format('YYYYMMDD')+'/endDate/'+start.format('YYYYMMDD');
 
     var serviceTable = $('#serviceTable').DataTable({
         ajax: {
