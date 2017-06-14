@@ -1,7 +1,7 @@
 package com.wiley.dao;
 
-import com.wiley.DynamicRow;
-import com.wiley.ReconDetailResponse;
+import com.wiley.model.DynamicRow;
+import com.wiley.model.ReconDetailResponse;
 import com.wiley.service.UtilService;
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;

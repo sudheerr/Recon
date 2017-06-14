@@ -5,6 +5,8 @@ import com.wiley.dao.OrdersDAO;
 import com.wiley.dao.PDMSOrdersDAO;
 import com.wiley.dao.ProductsDAO;
 import com.wiley.dao.ReconDAO;
+import com.wiley.model.ReconDetailResponse;
+import com.wiley.model.ReconResult;
 import com.wiley.service.UtilService;
 import com.wiley.user.UserDTO;
 import org.slf4j.Logger;
@@ -106,22 +108,22 @@ public class ReconController {
         } catch (ParseException e) {
             LOGGER.error(e.getMessage());
 
-            response.errorFlag = true;
+            response.setErrorFlag( true);
             response.setErrorMsg("Start and End Date not properly formatted. Proper format: YYYYMMDD.");
             return response;
         }
 //        try {
-            if (wricef.equals("I0203.1")) {
-                return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
-            } else if (wricef.equals("I0343")) {
-                return pdmsOrdersDAO.getOrderDetails(sDate, eDate, errorsSrc);
-            } else if (ORDER_WRICEFS.contains(wricef)) {
-                return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef);
-            } else {
-                response.errorFlag= true;
-                response.setErrorMsg("Unsupported WRICEF : " + wricef);
-                return response;
-            }
+        if (wricef.equals("I0203.1")) {
+            return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
+        } else if (wricef.equals("I0343")) {
+            return pdmsOrdersDAO.getOrderDetails(sDate, eDate, errorsSrc);
+        } else if (ORDER_WRICEFS.contains(wricef)) {
+            return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef);
+        } else {
+            response.setErrorFlag(true);
+            response.setErrorMsg("Unsupported WRICEF : " + wricef);
+            return response;
+        }
 //        } catch (SQLException e) {
 //            LOGGER.error(e.getMessage());
 //            response.setErrorFlag(true);

@@ -1,7 +1,7 @@
 package com.wiley.dao;
 
-import com.wiley.ReconResult;
-import com.wiley.ReconResultsMapper;
+import com.wiley.model.ReconResult;
+import com.wiley.model.mapper.ReconResultMapper;
 import com.wiley.service.UtilService;
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class ReconDAO extends GenericDAO{
         args[0]=startDate;
         args[1]= endDate;
 
-        List<ReconResult> results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultsMapper());
+        List<ReconResult> results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultMapper());
 
         if(results.size()==0){
         /*  Perform Dynamic Query
@@ -51,7 +51,7 @@ public class ReconDAO extends GenericDAO{
                 sDate =utilService.getStartofDay(startDate);
                 eDate =utilService.getEndofDay(endDate);
                 loadResultsData(sDate,eDate);
-                results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultsMapper());
+                results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultMapper());
 
             }catch (ParseException e){
                 //TODO Handle Error

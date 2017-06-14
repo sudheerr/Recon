@@ -1,4 +1,4 @@
-package com.wiley;
+package com.wiley.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -1,5 +1,5 @@
 $(document).ready(function(ReconView) {
-    
+
     function showErrorDialog(text) {
         $( "#reconDialog p" ).text(text);
         $( "#reconDialog" ).dialog({
@@ -16,7 +16,7 @@ $(document).ready(function(ReconView) {
         });
     }
 
-   $body = $("body");
+    $body = $("body");
     $(document).on({
         ajaxStart: function() { $body.addClass("loading");    },
         ajaxStop: function() { $body.removeClass("loading"); }
@@ -88,48 +88,48 @@ $(document).ready(function(ReconView) {
         }
     });
 
- /*   var buttons = new $.fn.dataTable.Buttons(serviceTable, {
-        buttons: [{
-                titleAttr: 'Toggle Filter',
-                text: '<span class="glyphicon glyphicon-filter"></span>',
-                action: function() {
-                    $('#filterrow').toggle();
-                }
-            },{
-                titleAttr: 'Clear ALL Filters',
-                text: '<span class="glyphicon glyphicon-remove-circle"></span>',
-                action: function() {
-                    $('#filterrow').find('input').each(function(index, input) { $(input).val(''); });
-                    serviceTable.columns().search('').draw();
-                    $(serviceTable.columns().header()).removeClass('appliedFilter');
-                }
-            }, {
-                extend: 'excelHtml5',
-                titleAttr: 'Export to Excel',
-                text: '<span class="glyphicon glyphicon-download-alt"></span>',
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    }
-                }
-            }
-        ],
-        dom: {
-            container: {
-                tag: 'span',
-                className: 'pull-right svcBtn'
-            },
-            buttonContainer: {
-                tag: 'span'
-            },
-            button: {
-                tag: 'a',
-                className: 'btn'
-            }
-        }
-    }).container().appendTo($('#serviceTableHeader'));
+    /*   var buttons = new $.fn.dataTable.Buttons(serviceTable, {
+     buttons: [{
+     titleAttr: 'Toggle Filter',
+     text: '<span class="glyphicon glyphicon-filter"></span>',
+     action: function() {
+     $('#filterrow').toggle();
+     }
+     },{
+     titleAttr: 'Clear ALL Filters',
+     text: '<span class="glyphicon glyphicon-remove-circle"></span>',
+     action: function() {
+     $('#filterrow').find('input').each(function(index, input) { $(input).val(''); });
+     serviceTable.columns().search('').draw();
+     $(serviceTable.columns().header()).removeClass('appliedFilter');
+     }
+     }, {
+     extend: 'excelHtml5',
+     titleAttr: 'Export to Excel',
+     text: '<span class="glyphicon glyphicon-download-alt"></span>',
+     exportOptions: {
+     modifier: {
+     page: 'current'
+     }
+     }
+     }
+     ],
+     dom: {
+     container: {
+     tag: 'span',
+     className: 'pull-right svcBtn'
+     },
+     buttonContainer: {
+     tag: 'span'
+     },
+     button: {
+     tag: 'a',
+     className: 'btn'
+     }
+     }
+     }).container().appendTo($('#serviceTableHeader'));
 
-    $("#serviceTable_length").on('change', function() {
-        serviceTable.page.len( $(this).val() ).draw();
-    });*/
+     $("#serviceTable_length").on('change', function() {
+     serviceTable.page.len( $(this).val() ).draw();
+     });*/
 }(ReconView));

@@ -1,16 +1,16 @@
-package com.wiley;
+package com.wiley.model.mapper;
 
+import com.wiley.model.ReconResult;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
 
 /**
  * Created by ravuri on 5/15/17.
  */
-public class ReconResultsMapper implements RowMapper<ReconResult> {
+public class ReconResultMapper implements RowMapper<ReconResult> {
 
     @Override
     public ReconResult mapRow(ResultSet rs, int i) throws SQLException {

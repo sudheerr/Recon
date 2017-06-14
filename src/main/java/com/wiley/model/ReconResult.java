@@ -1,4 +1,4 @@
-package com.wiley;
+package com.wiley.model;
 
 /**
  * Created by sravuri on 5/10/17.

@@ -1,10 +1,10 @@
 $(document).ready(function() {
-   $body = $("body");
+    $body = $("body");
     $(document).on({
         ajaxStart: function() { $body.addClass("loading");    },
-        ajaxStop: function() { $body.removeClass("loading"); }    
+        ajaxStop: function() { $body.removeClass("loading"); }
     });
-    
+
     // Inserting row to filtering
     // $('#serviceTable thead tr#filterrow th').each(function() {
     //     $(this).html('<div class="rounded"><input style="width:100%" type="text"/></div>');
@@ -70,90 +70,90 @@ $(document).ready(function() {
             { data: 'sapSuccess',  defaultContent: '' },
             { data: 'sapFailure', defaultContent: '' }
         ],
-		columnDefs : [{
-		    "targets" : 12,
-        	className:'dt-right',
-			fnCreatedCell : function(nTd,
-					sData, oData, iRow, iCol) {
-				if (sData > 0) {
-				    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate='+oData.startDate
-				    +'&eDate='+oData.endDate+'&wricef='+oData.wricef+'&errors=SAP">'+sData+'</a>';
+        columnDefs : [{
+            "targets" : 12,
+            className:'dt-right',
+            fnCreatedCell : function(nTd,
+                                     sData, oData, iRow, iCol) {
+                if (sData > 0) {
+                    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate='+oData.startDate
+                        +'&eDate='+oData.endDate+'&wricef='+oData.wricef+'&errors=SAP">'+sData+'</a>';
                     $(nTd).html(htmlLink).addClass('error-cell');
-				}
-			}
-		} , {
-		    "targets" : 9,
-        	className:'dt-right',
-			fnCreatedCell : function(nTd,
-					sData, oData, iRow, iCol) {
-				if (sData > 0) {
-				    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate='+oData.startDate
-				    +'&eDate='+oData.endDate+'&wricef='+oData.wricef+'&errors=EIS">'+sData+'</a>';
+                }
+            }
+        } , {
+            "targets" : 9,
+            className:'dt-right',
+            fnCreatedCell : function(nTd,
+                                     sData, oData, iRow, iCol) {
+                if (sData > 0) {
+                    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate='+oData.startDate
+                        +'&eDate='+oData.endDate+'&wricef='+oData.wricef+'&errors=EIS">'+sData+'</a>';
                     $(nTd).html(htmlLink).addClass('error-cell');
 
                 }
-			}
-		} ,{
-		    "targets" : 6,
-			className:'dt-right',
+            }
+        } ,{
+            "targets" : 6,
+            className:'dt-right',
             fnCreatedCell : function(nTd,
-					sData, oData, iRow, iCol) {
-				if (sData > 0) {
-				    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate='+oData.startDate
-				    +'&eDate='+oData.endDate+'&wricef='+oData.wricef+'&errors=SRC">'+sData+'</a>';
+                                     sData, oData, iRow, iCol) {
+                if (sData > 0) {
+                    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate='+oData.startDate
+                        +'&eDate='+oData.endDate+'&wricef='+oData.wricef+'&errors=SRC">'+sData+'</a>';
                     $(nTd).html(htmlLink).addClass('error-cell');
-				}
-			}
-		},
-        // {	"targets": 10,
-		 //    className:"dt-center",
-        //     "render": function ( data, type, row ) {
-        //     	if(data && data.indexOf('I')===0){
-        //     		  return '<span class="glyphicon glyphicon-arrow-right"></span>';
-        //     	}else{
-        //     		 return '<span class="glyphicon glyphicon-arrow-left"></span>';
-        //     	}
-        //     }
-        // },
+                }
+            }
+        },
+            // {	"targets": 10,
+            //    className:"dt-center",
+            //     "render": function ( data, type, row ) {
+            //     	if(data && data.indexOf('I')===0){
+            //     		  return '<span class="glyphicon glyphicon-arrow-right"></span>';
+            //     	}else{
+            //     		 return '<span class="glyphicon glyphicon-arrow-left"></span>';
+            //     	}
+            //     }
+            // },
             {
-            targets: 1,
-            render: $.fn.dataTable.render.ellipsis(20)
-        },{
-            targets: 3,
-            render: $.fn.dataTable.render.ellipsis(30)
-        },{
-            targets: 4,
-            className:'dt-right'
-        },{
-            targets: 5,
-            className:'dt-right'
-        },{
-            targets: 7,
-            className:'dt-right',
-            fnCreatedCell : function(nTd,
-            					sData, oData, iRow, iCol) {
-                if (oData.srcSuccess !== oData.eisTotal) {
-                    $(nTd).addClass('warning-cell');
-                    $(nTd).attr('title','SRC Success is not same as EIS Total');
+                targets: 1,
+                render: $.fn.dataTable.render.ellipsis(20)
+            },{
+                targets: 3,
+                render: $.fn.dataTable.render.ellipsis(30)
+            },{
+                targets: 4,
+                className:'dt-right'
+            },{
+                targets: 5,
+                className:'dt-right'
+            },{
+                targets: 7,
+                className:'dt-right',
+                fnCreatedCell : function(nTd,
+                                         sData, oData, iRow, iCol) {
+                    if (oData.srcSuccess !== oData.eisTotal) {
+                        $(nTd).addClass('warning-cell');
+                        $(nTd).attr('title','SRC Success is not same as EIS Total');
+                    }
                 }
-            }
-        },{
-            targets: 8,
-            className:'dt-right'
-        },{
-            targets: 10,
-            className:'dt-right',
-            fnCreatedCell : function(nTd,sData, oData, iRow, iCol) {
-                if (oData.eisSuccess !== oData.sapTotal) {
-                    $(nTd).addClass('warning-cell');
-                    $(nTd).attr('title','EIS Success is not same as SAP Total');
+            },{
+                targets: 8,
+                className:'dt-right'
+            },{
+                targets: 10,
+                className:'dt-right',
+                fnCreatedCell : function(nTd,sData, oData, iRow, iCol) {
+                    if (oData.eisSuccess !== oData.sapTotal) {
+                        $(nTd).addClass('warning-cell');
+                        $(nTd).attr('title','EIS Success is not same as SAP Total');
+                    }
                 }
+            },{
+                targets: 11,
+                className:'dt-right'
             }
-        },{
-            targets: 11,
-            className:'dt-right'
-        }
-		],
+        ],
         language: {
             info:           "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",
             infoFiltered:   "(filtered from _MAX_ total entries)",
@@ -168,29 +168,29 @@ $(document).ready(function() {
 
     var buttons = new $.fn.dataTable.Buttons(serviceTable, {
         buttons: [{
-                titleAttr: 'Toggle Filter',
-                text: '<span class="glyphicon glyphicon-filter"></span>',
-                action: function() {
-                    $('#filterrow').toggle();
-                }
-            },{
-                titleAttr: 'Clear ALL Filters',
-                text: '<span class="glyphicon glyphicon-remove-circle"></span>',
-                action: function() {
-                    $('#filterrow').find('input').each(function(index, input) { $(input).val(''); });
-                    serviceTable.columns().search('').draw();
-                    $(serviceTable.columns().header()).removeClass('appliedFilter');
-                }
-            }, {
-                extend: 'excelHtml5',
-                titleAttr: 'Export to Excel',
-                text: '<span class="glyphicon glyphicon-download-alt"></span>',
-                exportOptions: {
-                    modifier: {
-                        page: 'current'
-                    }
+            titleAttr: 'Toggle Filter',
+            text: '<span class="glyphicon glyphicon-filter"></span>',
+            action: function() {
+                $('#filterrow').toggle();
+            }
+        },{
+            titleAttr: 'Clear ALL Filters',
+            text: '<span class="glyphicon glyphicon-remove-circle"></span>',
+            action: function() {
+                $('#filterrow').find('input').each(function(index, input) { $(input).val(''); });
+                serviceTable.columns().search('').draw();
+                $(serviceTable.columns().header()).removeClass('appliedFilter');
+            }
+        }, {
+            extend: 'excelHtml5',
+            titleAttr: 'Export to Excel',
+            text: '<span class="glyphicon glyphicon-download-alt"></span>',
+            exportOptions: {
+                modifier: {
+                    page: 'current'
                 }
             }
+        }
         ],
         dom: {
             container: {
