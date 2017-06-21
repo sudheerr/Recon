@@ -33,25 +33,36 @@ public class ReconDAO extends GenericDAO{
             " eis_total, eis_success, eis_errors, sap_total, sap_success, sap_errors, flow_direction,  RANK() OVER (PARTITION BY WRICEF ORDER BY ID DESC) RANK  from recon_results  " +
             " where START_DATE =TO_DATE(?,'YYYYMMDD') and END_DATE = TO_DATE(?,'YYYYMMDD'))  WHERE RANK=1";
 
+    private static final String FETCH_ORDER_RESULTS = "SELECT * FROM (select id, wricef, source, target, start_date, end_date, service_name, interface_name, source_total, source_success, source_errors," +
+            " eis_total, eis_success, eis_errors, sap_total, sap_success, sap_errors, currency,  RANK() OVER (PARTITION BY WRICEF, CURRENCY ORDER BY ID DESC) RANK  from order_results  " +
+            " where START_DATE =TO_DATE(?,'YYYYMMDD') and END_DATE = TO_DATE(?,'YYYYMMDD'))  WHERE RANK=1";
 
-    public List<ReconResult> fetchResults(String startDate, String endDate){
+    public List<ReconResult> fetchResults(String startDate, String endDate, boolean transactions){
+
         Object[] args = new Object[2];
         args[0]=startDate;
         args[1]= endDate;
 
-        List<ReconResult> results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultMapper());
+        List<ReconResult> results;
+        if(transactions){
+            results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultMapper());
+        }else{
+            results = getJdbcTemplate().query(FETCH_ORDER_RESULTS, args, new ReconResultMapper());
+        }
 
         if(results.size()==0){
-        /*  Perform Dynamic Query
-            TODO Ideally dynamic query should be handled seperately. right now we can distinguish between
-            Precomputed dates (Yesterday, WTD, MTD, QTD) and  Custom Range
-        */
+            // Perform Dynamic Query
+
             Timestamp sDate, eDate;
             try {
                 sDate =utilService.getStartofDay(startDate);
                 eDate =utilService.getEndofDay(endDate);
                 loadResultsData(sDate,eDate);
-                results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultMapper());
+                if(transactions){
+                    results = getJdbcTemplate().query(FETCH_RESULTS, args, new ReconResultMapper());
+                }else{
+                    results = getJdbcTemplate().query(FETCH_ORDER_RESULTS, args, new ReconResultMapper());
+                }
 
             }catch (ParseException e){
                 //TODO Handle Error

@@ -58,6 +58,10 @@ public class OrdersDAO extends GenericDAO{
             srcSystem = "CSS";
             interfaceName = "UpdateSubscriptionOrderFromCSS";
             source = "CSS";
+        } else if (wricef.equals("I0343")) {
+            srcSystem = "PDM";
+            interfaceName = "UpdateOrderFromPDMicroSites";
+            source = "PD Microsites";
         } else {
             return null;
         }
@@ -73,12 +77,12 @@ public class OrdersDAO extends GenericDAO{
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
             public DynamicRow mapRow(ResultSet rs, int i) throws SQLException {
                 Date createDate = rs.getDate("CORE_LOAD_DATE_TIME");
-                String createDate_S = createDate != null ? SDF.format(createDate) : "";
+                String createDateStr = createDate != null ? SDF.format(createDate) : "";
 
                 return new DynamicRow(rs.getString("SUB_ORD_REF_NUM"),
-                        createDate_S,
+                        createDateStr,
+                        rs.getString("CURRENCY_CODE"),
                         rs.getString("TOTAL_PRICE"),
-                        rs.getString("LINE_ITEM_COUNT"),
                         rs.getString("STATUS_CODE"),
                         rs.getString("STATUS_MSG"),
                         null
@@ -98,8 +102,8 @@ public class OrdersDAO extends GenericDAO{
 
         columns.add("Sub Order Ref Number");
         columns.add("Posted Date");
+        columns.add("Currency Code");
         columns.add("Total Order Price");
-        columns.add("Line Item Count");
         columns.add("Error Code");
         columns.add("Error Message");
 

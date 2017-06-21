@@ -7,22 +7,25 @@ import java.util.List;
 /**
  * Created by sravuri on 5/30/17.
  */
-public interface ApplicationConstants {
+public class ApplicationConstants {
 
-    SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
+    private ApplicationConstants(){}
 
-    SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyyMMdd");
+    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    List<String> ORDER_WRICEFS = new ArrayList<String>(){{
+    public static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyyMMdd");
+
+    public static final List<String> ORDER_WRICEFS = new ArrayList<String>(){{
         add("I0230.6");
         add("I0230.7");
         add("I0230.8");
+        add("I0343");
     }};
 
-    String USER_DTO ="USER_DTO";
+    public static final String USER_DTO ="USER_DTO";
 
-    String EISADMIN = "eisadmin";
-    String START_DATE = "startDate";
-    String END_DATE = "endDate";
-    String ERROR_CODE = "errcode";
+    public static final String EISADMIN = "eisadmin";
+    public static final String START_DATE = "startDate";
+    public static final String END_DATE = "endDate";
+    public static final String ERROR_CODE = "errcode";
 }

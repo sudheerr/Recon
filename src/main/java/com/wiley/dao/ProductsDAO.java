@@ -53,11 +53,11 @@ public class ProductsDAO extends GenericDAO {
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
             public DynamicRow mapRow(ResultSet rs, int i) throws SQLException {
                 Date createDate = rs.getDate("CORE_CREATE_DATE");
-                String createDate_S = createDate != null ? SDF.format(createDate) : "";
+                String createDateStr = createDate != null ? SDF.format(createDate) : "";
 
                 return new DynamicRow(rs.getString("CORE_MATNUM"),
                         rs.getString("PRODUCT_TYPE"),
-                        createDate_S,
+                        createDateStr,
                         rs.getString("STATUS_CODE"),
                         rs.getString("STATUS_MSG"),
                         null,

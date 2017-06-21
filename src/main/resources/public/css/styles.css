@@ -380,25 +380,23 @@ td.dt-right { text-align: right; }
 td.error-cell, td.warning-cell{
     text-decoration:underline;
     color:#FFF;
-    width: 100%;
-    height: 100%;
+    /*width: 100%;*/
+    /*height: 100%;*/
 }
 
-td.error-cell
-{
+td.error-cell{
     background-color:#ff3a33;
 }
-td.warning-cell
-{
+td.warning-cell{
     background-color:#ff9933;
-    text-decoration:none;
+    /*text-decoration:none;*/
     /*font-weight: 700;*/
 }
 
 td.error-cell > a, td.warning-cell > a{
-    display: block;
-    height: 100%;
-    width: 100%;
+    /*display: block;*/
+    /*height: 100%;*/
+    /*width: 100%;*/
     color:#FFFFFF;
 }
 

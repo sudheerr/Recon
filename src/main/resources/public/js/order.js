@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     $body = $("body");
     $(document).on({
         ajaxStart: function () {
@@ -10,9 +11,9 @@ $(document).ready(function () {
     });
 
     // Inserting row to filtering
-    // $('#serviceTable thead tr#filterrow th').each(function() {
-    //     $(this).html('<div class="rounded"><input style="width:100%" type="text"/></div>');
-    // });
+    $('#serviceTable thead tr#filterrow th').each(function () {
+        $(this).html('<div class="rounded"><input style="width:100%" type="text"/></div>');
+    });
 
     var start = moment().subtract(1, 'days');
     var end = moment();
@@ -41,69 +42,68 @@ $(document).ready(function () {
 
     $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
         // FIRE new request to load data
-        var url = ReconView.getContextPath() + '/webapi/results/startDate/' + picker.startDate.format('YYYYMMDD') + '/endDate/' + picker.endDate.format('YYYYMMDD');
+        var url = ReconView.getContextPath() + '/webapi/orderResults/startDate/' + picker.startDate.format('YYYYMMDD') + '/endDate/' + picker.endDate.format('YYYYMMDD');
         serviceTable.ajax.url(url).load();
     });
 
-    var url = ReconView.getContextPath() + '/webapi/results/startDate/' + start.format('YYYYMMDD') + '/endDate/' + start.format('YYYYMMDD');
+    var url = ReconView.getContextPath() + '/webapi/orderResults/startDate/' + start.format('YYYYMMDD') + '/endDate/' + start.format('YYYYMMDD');
+
 
     var serviceTable = $('#serviceTable').DataTable({
         ajax: {
             url: url,
             dataSrc: ""
         },
-        scrollY: '70vh',
-        scrollCollapse: true,
+        /*  scrollY:'70vh',
+         scrollCollapse: true,*/
         scrollX: true,
         orderCellsTop: true,
         pageLength: 25,
-        fixedColumns: true,
+        //Note: Changing/Adding columns might break functionality. Do it cautiously.
         columns: [
-            // Changing or Adding columns will break functionality. Do it Cautiously.
             {data: 'wricef', defaultContent: ''},
             {data: 'source', width: '120px'},
             {data: 'target'},
-            {data: 'interfaceName'},
-            {data: 'srcTotal', defaultContent: ''},
-            {data: 'srcSuccess', defaultContent: ''},
-            {data: 'srcFailure', defaultContent: ''},
-            {data: 'eisTotal', defaultContent: ''},
-            {data: 'eisSuccess', defaultContent: ''},
-            {data: 'eisFailure', defaultContent: ''},
-            {data: 'sapTotal', defaultContent: ''},
-            {data: 'sapSuccess', defaultContent: ''},
-            {data: 'sapFailure', defaultContent: ''}
+            {data: 'currency'},
+            {data: 'srcTotal', defaultContent: 0},
+            {data: 'srcSuccess', defaultContent: 0},
+            {data: 'srcFailure', defaultContent: 0},
+            {data: 'eisTotal', defaultContent: 0},
+            {data: 'eisSuccess', defaultContent: 0},
+            {data: 'eisFailure', defaultContent: 0},
+            {data: 'sapTotal', defaultContent: 0},
+            {data: 'sapSuccess', defaultContent: 0},
+            {data: 'sapFailure', defaultContent: 0}
         ],
-        columnDefs: [{
-            "targets": [6, 9, 12],
-            className: 'dt-right',
-            fnCreatedCell: function (nTd,
-                                     sData, oData, iRow, iCol) {
-                if (sData > 0) {
-                    var errorSrc =  (iCol===6)?'SRC':(iCol===9?'EIS':'SAP');
-                    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors='+errorSrc+'">' + sData + '</a>';
-                    $(nTd).html(htmlLink).addClass('error-cell');
+        columnDefs: [
+            {
+                targets: [0,2],
+                render: $.fn.dataTable.render.ellipsis(30)
+            },{
+                targets: [4,5,7,8,10,11],
+                className: 'dt-right',
+                render: function (data, type, row) {
+                    // return '$' + data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    return data;
+                }
+            }, {
+                targets: [6,9,12],
+                className: 'dt-right',
+                fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                    if (sData > 0) {
+                        $(nTd).addClass('error-cell');
+                    }
+                },
+                render: function (data, type, row) {
+                     // var retStr = '$' + data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                     // if (data > 0) {
+                     //     return '<a  href="./recon-orderDetail.html"  style="color:#FFFFFF; text-decoration:underline;">' + retStr + '</a>';
+                     // } else {
+                     //     return retStr;
+                     // }
+                    return data;
                 }
             }
-        }, {
-            targets: [1, 3],
-            render: $.fn.dataTable.render.ellipsis(30)
-        }, {
-            targets: [4, 5, 8, 11, 10],
-            className: 'dt-right'
-        }, {
-            targets: [7],
-            className: 'dt-right',
-            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                if((oData.srcSuccess !== oData.eisTotal)){
-                    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                                                            + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC">' + sData + '</a>';
-                    $(nTd).html(htmlLink).addClass('warning-cell');
-                    $(nTd).attr('title', 'SRC Success is not same as EIS Total');
-                }
-            }
-        }
         ],
         language: {
             info: "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",
@@ -114,7 +114,53 @@ $(document).ready(function () {
                 previous: "<i class='glyphicon glyphicon-menu-left'></i>"
             }
         },
-        lengthChange: false
+        lengthChange: false,
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+
+            // Remove the formatting to get integer data for summation
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            for (var i = 4; i <= 12; i++) {
+                // if(i==9){
+                // 	continue;
+                // }
+                var total = api
+                    .column(i)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                $(api.column(i).footer()).html(total.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+            }
+            /*
+             // Total over all pages
+             total = api
+             .column( 4 )
+             .data()
+             .reduce( function (a, b) {
+             return intVal(a) + intVal(b);
+             }, 0 );
+
+             // Total over this page
+             pageTotal = api
+             .column( 4, { page: 'current'} )
+             .data()
+             .reduce( function (a, b) {
+             return intVal(a) + intVal(b);
+             }, 0 );
+
+             // Update footer
+             $( api.column( 4 ).footer() ).html(
+             '$'+pageTotal +' ( $'+ total +' total)'
+             );*/
+        }
     });
 
     var buttons = new $.fn.dataTable.Buttons(serviceTable, {
@@ -170,7 +216,9 @@ $(document).ready(function () {
         } else {
             header.addClass('appliedFilter');
         }
+
     });
+
 
     $("#serviceTable_length").on('change', function () {
         serviceTable.page.len($(this).val()).draw();

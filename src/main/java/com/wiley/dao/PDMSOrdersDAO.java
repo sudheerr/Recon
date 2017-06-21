@@ -44,11 +44,11 @@ public class PDMSOrdersDAO extends GenericDAO{
 
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
             public DynamicRow mapRow(ResultSet rs, int i) throws SQLException {
-                    Date createDate = rs.getDate("CORE_REQUEST_DATE");
-                String createDate_S = createDate != null ? SDF.format(createDate) : "";
+                Date createDate = rs.getDate("CORE_REQUEST_DATE");
+                String createDateStr = createDate != null ? SDF.format(createDate) : "";
 
                 return new DynamicRow(rs.getString("SUB_ORD_REF_NUM"),
-                        createDate_S,
+                        createDateStr,
                         rs.getString("ORDER_PRICE"),
                         rs.getString("STATUS_CODE"),
                         rs.getString("STATUS_MSG"),

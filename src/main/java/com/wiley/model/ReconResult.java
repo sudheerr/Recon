@@ -13,6 +13,7 @@ public class ReconResult {
     private String startDate;
     private String endDate;
     private String flowDirection;
+    private String currency;
     private int srcTotal;
     private int srcSuccess;
     private int srcFailure;
@@ -96,6 +97,14 @@ public class ReconResult {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public int getSrcTotal() {

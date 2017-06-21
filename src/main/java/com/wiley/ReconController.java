@@ -2,7 +2,7 @@ package com.wiley;
 
 
 import com.wiley.dao.OrdersDAO;
-import com.wiley.dao.PDMSOrdersDAO;
+//import com.wiley.dao.PDMSOrdersDAO;
 import com.wiley.dao.ProductsDAO;
 import com.wiley.dao.ReconDAO;
 import com.wiley.model.ReconDetailResponse;
@@ -34,7 +34,7 @@ public class ReconController {
 
     private OrdersDAO ordersDAO;
 
-    private PDMSOrdersDAO pdmsOrdersDAO;
+    //private PDMSOrdersDAO pdmsOrdersDAO;
 
     private UtilService utilService;
 
@@ -53,10 +53,10 @@ public class ReconController {
         this.ordersDAO = ordersDAO;
     }
 
-    @Autowired
-    public void setPdmsOrdersDAO(PDMSOrdersDAO pdmsOrdersDAO) {
-        this.pdmsOrdersDAO = pdmsOrdersDAO;
-    }
+//    @Autowired
+//    public void setPdmsOrdersDAO(PDMSOrdersDAO pdmsOrdersDAO) {
+//        this.pdmsOrdersDAO = pdmsOrdersDAO;
+//    }
 
     @Autowired
     public void setUtilService(UtilService utilService) {
@@ -79,16 +79,14 @@ public class ReconController {
     @ResponseBody
     public List<ReconResult> getResults(@PathVariable("startDate") String startDate,
                                         @PathVariable("endDate") String endDate) {
+        return reconDAO.fetchResults(startDate, endDate, true);
+    }
 
-        //TODO Send Error Details on Exception
-        try {
-            SDF_YYYYMMDD.parse(startDate);
-            SDF_YYYYMMDD.parse(endDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return reconDAO.fetchResults(startDate, endDate);
+    @RequestMapping(value = "/orderResults/startDate/{startDate}/endDate/{endDate}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ReconResult> getOrderResults(@PathVariable("startDate") String startDate,
+                                        @PathVariable("endDate") String endDate) {
+        return reconDAO.fetchResults(startDate, endDate, false);
     }
 
     @RequestMapping(value = "/details/{wricef}/{errorsSrc}/startDate/{startDate}/endDate/{endDate}", method = RequestMethod.GET)
@@ -112,23 +110,19 @@ public class ReconController {
             response.setErrorMsg("Start and End Date not properly formatted. Proper format: YYYYMMDD.");
             return response;
         }
-//        try {
+
         if (wricef.equals("I0203.1")) {
             return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
-        } else if (wricef.equals("I0343")) {
+        }
+        /*else if (wricef.equals("I0343")) {
             return pdmsOrdersDAO.getOrderDetails(sDate, eDate, errorsSrc);
-        } else if (ORDER_WRICEFS.contains(wricef)) {
+        }*/
+        else if (ORDER_WRICEFS.contains(wricef)) {
             return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef);
         } else {
             response.setErrorFlag(true);
             response.setErrorMsg("Unsupported WRICEF : " + wricef);
             return response;
         }
-//        } catch (SQLException e) {
-//            LOGGER.error(e.getMessage());
-//            response.setErrorFlag(true);
-//            response.setErrorMsg("Internal Exception Occurred while fetching the details.");
-//            return response;
-//        }
     }
 }
