@@ -154,7 +154,7 @@ CREATE OR REPLACE PACKAGE BODY recon_pkg AS
                v_tempInterface:= 'UpdateSubscriptionOrderFromInfoPoems';
                v_tempSrc:= 'InfoPoems/Essential Evidence Plus';
                v_tempWricef:= 'I0230.6';
-            ELSIF v_source = 'PDM' THEN
+            ELSIF v_source = 'PDMS' THEN
                v_tempInterface:= 'UpdateOrderFromPDMicroSites';
                v_tempSrc:= 'PD Microsites';
                v_tempWricef:= 'I0343';
@@ -177,7 +177,7 @@ CREATE OR REPLACE PACKAGE BODY recon_pkg AS
 
         FOR TEMP_RESULTS IN (
         SELECT SOURCE_SYSTEM AS SOURCE_SYSTEM,
-        CURRENCY_CODE AS CURRENCY_CODE,
+        CURRENCY_CODE AS CURRENCY_CODE, COUNT(*) AS SRC_COUNT,
         SUM(TOTAL_PRICE) AS CORE_TOTAL, SUM(TOTAL_PRICE) AS CORE_SUCCESS, 0 AS CORE_FAILURE,
         SUM(CASE WHEN SAP_EIS_ORDER is not null THEN TOTAL_PRICE ELSE 0 END ) TIBCO_TOTAL,
         SUM(CASE WHEN STATUS_FOUND='FoundInSAP' THEN TOTAL_PRICE ELSE 0 END ) TIBCO_SUCCESS,
@@ -237,7 +237,7 @@ CREATE OR REPLACE PACKAGE BODY recon_pkg AS
                v_tempInterface:= 'UpdateSubscriptionOrderFromInfoPoems';
                v_tempSrc:= 'InfoPoems/Essential Evidence Plus';
                v_tempWricef:= 'I0230.6';
-            ELSIF v_source = 'PDM' THEN
+            ELSIF v_source = 'PDMS' THEN
                v_tempInterface:= 'UpdateOrderFromPDMicroSites';
                v_tempSrc:= 'PD Microsites';
                v_tempWricef:= 'I0343';
@@ -247,11 +247,11 @@ CREATE OR REPLACE PACKAGE BODY recon_pkg AS
                 SELECT coalesce(MAX(ID)+1, 1) INTO v_temp FROM ORDER_RESULTS;
 
                 Insert into ORDER_RESULTS (ID,WRICEF,SOURCE,TARGET,CURRENCY,START_DATE,END_DATE,SERVICE_NAME,
-                INTERFACE_NAME,SOURCE_TOTAL,SOURCE_SUCCESS,SOURCE_ERRORS,EIS_TOTAL,EIS_SUCCESS,
+                INTERFACE_NAME, SRC_COUNT, SOURCE_TOTAL, SOURCE_SUCCESS,SOURCE_ERRORS,EIS_TOTAL,EIS_SUCCESS,
                 EIS_ERRORS,SAP_TOTAL,SAP_SUCCESS,SAP_ERRORS,CREATED_TS)
                 values
                 (v_temp, v_tempWricef, v_tempSrc, 'SAP', v_currency, to_date(to_char(startDate,'YYYY-MM-DD'),'YYYY-MM-DD'), to_date(to_char(endDate,'YYYY-MM-DD'),'YYYY-MM-DD'),
-                'QTCOrderManagement01',v_tempInterface,
+                'QTCOrderManagement01',v_tempInterface, TEMP_RESULTS.SRC_COUNT,
                 TEMP_RESULTS.CORE_TOTAL, TEMP_RESULTS.CORE_SUCCESS, TEMP_RESULTS.CORE_FAILURE,
                 TEMP_RESULTS.TIBCO_TOTAL, TEMP_RESULTS.TIBCO_SUCCESS, TEMP_RESULTS.TIBCO_FAILURE,
                 TEMP_RESULTS.SAP_TOTAL, TEMP_RESULTS.SAP_SUCCESS, TEMP_RESULTS.SAP_FAILURE, sysdate );
@@ -262,6 +262,3 @@ CREATE OR REPLACE PACKAGE BODY recon_pkg AS
         INSERT INTO svc_logs( APPLICATION,LOG_LEVEL, LOG_LINE, log_text, create_user, create_date) VALUES ('ServiceCatalog', 'INFO', '1.3', 'proc completed', user_name, current_date);
   END recon_populate_results;
 END recon_pkg;
-
-call recon_pkg.recon_populate_results(TO_TIMESTAMP ('2017/06/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), sysdate-1);
-commit

@@ -1,5 +1,6 @@
 package com.wiley.dao;
 
+import com.wiley.model.DynamicColumn;
 import com.wiley.model.DynamicRow;
 import com.wiley.model.ReconDetailResponse;
 import com.wiley.service.UtilService;
@@ -26,12 +27,6 @@ import static com.wiley.ApplicationConstants.*;
  */
 @Service
 public class PDMSOrdersDAO extends GenericDAO{
-    private final UtilService utilService;
-
-    @Autowired
-    private PDMSOrdersDAO(UtilService utilService) {
-        this.utilService = utilService;
-    }
 
     public ReconDetailResponse getOrderDetails(Timestamp startDate, Timestamp endDate, String errorSrc){
 
@@ -51,9 +46,7 @@ public class PDMSOrdersDAO extends GenericDAO{
                         createDateStr,
                         rs.getString("ORDER_PRICE"),
                         rs.getString("STATUS_CODE"),
-                        rs.getString("STATUS_MSG"),
-                        null,
-                        null
+                        rs.getString("STATUS_MSG")
                 );
             }
         }));
@@ -64,16 +57,15 @@ public class PDMSOrdersDAO extends GenericDAO{
         in.addValue(ERROR_CODE, errorSrc);
 
         List<DynamicRow> rows = simpleJdbcCall.executeObject(List.class, in);
-        List<String> columns = new ArrayList<>();
 
-        columns.add("Sub Order Ref Number");
-        //columns.add("Purchase Order Date");
-        columns.add("Posted Date");
-        columns.add("Total Order Price");
-        columns.add("Error Code");
-        columns.add("Error Message");
+        List<DynamicColumn> columns = new ArrayList<>();
+        columns.add(new DynamicColumn("Sub Order Ref Number","field1",""));
+        columns.add(new DynamicColumn("Posted Date","field2",""));
+        columns.add(new DynamicColumn("Total Order Price","field3",""));
+        columns.add(new DynamicColumn("Error Code","field4",""));
+        columns.add(new DynamicColumn("Error Message","field5",""));
 
-        return utilService.createResponse(columns, rows, SDF.format(startDate),
+        return getUtilService().createResponse(columns, rows, SDF.format(startDate),
                 SDF.format(endDate), "UpdateOrderFromPDMicroSites",
                 "PD Microsites, CWS sites, Springboard sites, dotCMS", "SAP", "I0343");
     }

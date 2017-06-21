@@ -1,5 +1,6 @@
 package com.wiley.dao;
 
+import com.wiley.model.DynamicColumn;
 import com.wiley.model.DynamicRow;
 import com.wiley.model.ReconDetailResponse;
 import com.wiley.service.UtilService;
@@ -32,16 +33,9 @@ import static com.wiley.ApplicationConstants.*;
  */
 @Service
 public class OrdersDAO extends GenericDAO{
-    private final UtilService utilService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(OrdersDAO.class);
 
-    @Autowired
-    public OrdersDAO(UtilService utilService) {
-        this.utilService = utilService;
-    }
-
-    public ReconDetailResponse getOrderDetails(Timestamp startDate, Timestamp endDate, String errorSrc, String wricef){
+    public ReconDetailResponse getOrderDetails(Timestamp startDate, Timestamp endDate, String errorSrc, String wricef, String currencyCode){
 
         LOGGER.info("parameters passed : startDate = [" + startDate + "], endDate = [" + endDate + "], errorSrc = [" + errorSrc + "]");
         String interfaceName, source, srcSystem;
@@ -59,7 +53,7 @@ public class OrdersDAO extends GenericDAO{
             interfaceName = "UpdateSubscriptionOrderFromCSS";
             source = "CSS";
         } else if (wricef.equals("I0343")) {
-            srcSystem = "PDM";
+            srcSystem = "PDMS";
             interfaceName = "UpdateOrderFromPDMicroSites";
             source = "PD Microsites";
         } else {
@@ -73,6 +67,7 @@ public class OrdersDAO extends GenericDAO{
         simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));
         simpleJdbcCall.declareParameters(new SqlParameter(ERROR_CODE, OracleTypes.VARCHAR));
         simpleJdbcCall.declareParameters(new SqlParameter("srcSystem", OracleTypes.VARCHAR));
+        simpleJdbcCall.declareParameters(new SqlParameter("currencyCode", OracleTypes.VARCHAR));
 
         simpleJdbcCall.declareParameters(new SqlOutParameter("c_results", OracleTypes.CURSOR, new RowMapper<DynamicRow>() {
             public DynamicRow mapRow(ResultSet rs, int i) throws SQLException {
@@ -84,8 +79,7 @@ public class OrdersDAO extends GenericDAO{
                         rs.getString("CURRENCY_CODE"),
                         rs.getString("TOTAL_PRICE"),
                         rs.getString("STATUS_CODE"),
-                        rs.getString("STATUS_MSG"),
-                        null
+                        rs.getString("STATUS_MSG")
                 );
             }
         }));
@@ -95,19 +89,18 @@ public class OrdersDAO extends GenericDAO{
         in.addValue(END_DATE, endDate);
         in.addValue(ERROR_CODE, errorSrc);
         in.addValue("srcSystem", srcSystem);
+        in.addValue("currencyCode", currencyCode);
 
         List<DynamicRow> rows = simpleJdbcCall.executeObject(List.class, in);
+        List<DynamicColumn> columns = new ArrayList<>();
+        columns.add(new DynamicColumn("Sub Order Ref Number","field1",""));
+        columns.add(new DynamicColumn("Posted Date","field2",""));
+        columns.add(new DynamicColumn("Currency Code","field3",""));
+        columns.add(new DynamicColumn("Total Order Price","field4","dt-right","number"));
+        columns.add(new DynamicColumn("Error Code","field5",""));
+        columns.add(new DynamicColumn("Error Message","field6",""));
 
-        List<String> columns = new ArrayList<>();
-
-        columns.add("Sub Order Ref Number");
-        columns.add("Posted Date");
-        columns.add("Currency Code");
-        columns.add("Total Order Price");
-        columns.add("Error Code");
-        columns.add("Error Message");
-
-        return utilService.createResponse(columns, rows, SDF.format(startDate),
+        return getUtilService().createResponse(columns, rows, SDF.format(startDate),
                 SDF.format(endDate), interfaceName,
                 source, "SAP", wricef);
     }

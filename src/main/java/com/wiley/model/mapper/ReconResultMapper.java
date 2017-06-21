@@ -33,6 +33,7 @@ public class ReconResultMapper implements RowMapper<ReconResult> {
         result.setSapSuccess(rs.getInt(16));
         result.setSapFailure(rs.getInt(17));
         result.setCurrency(rs.getString(18));
+        result.setSrcCount(rs.getInt(19));
        // result.setFlowDirection(rs.getString(18));
 
         return result;

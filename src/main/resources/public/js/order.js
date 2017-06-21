@@ -48,23 +48,21 @@ $(document).ready(function () {
 
     var url = ReconView.getContextPath() + '/webapi/orderResults/startDate/' + start.format('YYYYMMDD') + '/endDate/' + start.format('YYYYMMDD');
 
-
     var serviceTable = $('#serviceTable').DataTable({
         ajax: {
             url: url,
             dataSrc: ""
         },
-        /*  scrollY:'70vh',
-         scrollCollapse: true,*/
         scrollX: true,
         orderCellsTop: true,
         pageLength: 25,
         //Note: Changing/Adding columns might break functionality. Do it cautiously.
         columns: [
             {data: 'wricef', defaultContent: ''},
-            {data: 'source', width: '120px'},
+            {data: 'source'},
             {data: 'target'},
             {data: 'currency'},
+            {data: 'srcCount', defaultContent: 0},
             {data: 'srcTotal', defaultContent: 0},
             {data: 'srcSuccess', defaultContent: 0},
             {data: 'srcFailure', defaultContent: 0},
@@ -80,30 +78,34 @@ $(document).ready(function () {
                 targets: [0,2],
                 render: $.fn.dataTable.render.ellipsis(30)
             },{
-                targets: [4,5,7,8,10,11],
+                targets: [5,6,7,8,9,10,11,12,13],
                 className: 'dt-right',
                 render: function (data, type, row) {
-                    // return '$' + data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-                    return data;
+                    return data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                 }
             }, {
-                targets: [6,9,12],
-                className: 'dt-right',
+                targets: [7,10,13],
                 fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                     if (sData > 0) {
-                        $(nTd).addClass('error-cell');
-                    }
-                },
-                render: function (data, type, row) {
-                     // var retStr = '$' + data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-                     // if (data > 0) {
-                     //     return '<a  href="./recon-orderDetail.html"  style="color:#FFFFFF; text-decoration:underline;">' + retStr + '</a>';
-                     // } else {
-                     //     return retStr;
-                     // }
-                    return data;
+                       var errorSrc =  (iCol===7)?'SRC':(iCol===10?'EIS':'SAP');
+                                           var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
+                                               + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors='+errorSrc
+                                               + '&currencyCode='+oData.currency+'">' + sData + '</a>';
+                       $(nTd).html(htmlLink).addClass('error-cell');
+                   }
                 }
-            }
+            }, {
+                 targets: [8],
+                 fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                   if((oData.srcSuccess !== oData.eisTotal)){
+                         var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
+                                                                         + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC'
+                                                                         + '&currencyCode='+oData.currency+'">' + sData + '</a>';
+                         $(nTd).html(htmlLink).addClass('warning-cell');
+                         $(nTd).attr('title', 'SRC Success is not same as EIS Total');
+                     }
+                 }
+             }
         ],
         language: {
             info: "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",
@@ -126,10 +128,7 @@ $(document).ready(function () {
                         i : 0;
             };
 
-            for (var i = 4; i <= 12; i++) {
-                // if(i==9){
-                // 	continue;
-                // }
+            for (var i = 5; i <= 13; i++) {
                 var total = api
                     .column(i)
                     .data()
@@ -216,7 +215,6 @@ $(document).ready(function () {
         } else {
             header.addClass('appliedFilter');
         }
-
     });
 
 

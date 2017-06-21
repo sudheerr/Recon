@@ -14,7 +14,9 @@ public class ReconResult {
     private String endDate;
     private String flowDirection;
     private String currency;
+    private int srcCount;
     private int srcTotal;
+
     private int srcSuccess;
     private int srcFailure;
     private int eisTotal;
@@ -105,6 +107,14 @@ public class ReconResult {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public int getSrcCount() {
+        return srcCount;
+    }
+
+    public void setSrcCount(int srcCount) {
+        this.srcCount = srcCount;
     }
 
     public int getSrcTotal() {

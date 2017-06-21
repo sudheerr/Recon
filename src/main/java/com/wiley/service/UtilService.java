@@ -19,17 +19,12 @@ import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
  */
 @Service
 public class UtilService {
-    public ReconDetailResponse createResponse(List<String> columns, List<DynamicRow> rows,
+    public ReconDetailResponse createResponse(List<DynamicColumn> columns, List<DynamicRow> rows,
                                               String startDate, String endDate, String interfaceName,
                                               String source, String target, String wricef){
 
-        List<DynamicColumn> dynCols = new ArrayList<>();
-        for(int i=0; i<columns.size();i++){
-            dynCols.add(new DynamicColumn(columns.get(i),"field"+(i+1)));
-        }
-
         ReconDetailResponse response = new ReconDetailResponse();
-        response.setColumns(dynCols);
+        response.setColumns(columns);
         response.setData(rows);
         response.setStartDate(startDate);
         response.setEndDate(endDate);

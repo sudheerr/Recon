@@ -20,6 +20,17 @@ public class DynamicRow {
     public final String field6;
     public final String field7;
 
+    /*
+    Having multiple constructor makes the invoking code cleaner(without passing nulls)
+    * */
+    public DynamicRow(String field1, String field2, String field3, String field4, String field5) {
+        this(field1,field2,field3,field4,field5,null,null);
+    }
+
+    public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6) {
+        this(field1,field2,field3,field4,field5,field6,null);
+    }
+
     public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6, String field7) {
         this.field1 = field1;
         this.field2 = field2;

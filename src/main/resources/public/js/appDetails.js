@@ -26,6 +26,7 @@ $(document).ready(function(ReconView) {
     var eDate = ReconView.getURLParameter('eDate');
     var wricef = ReconView.getURLParameter('wricef');
     var errors = ReconView.getURLParameter('errors');
+    var currencyCode = ReconView.getURLParameter('currencyCode');
 
     //#TODO need to perform validation for all fields
 
@@ -36,8 +37,11 @@ $(document).ready(function(ReconView) {
         return;
     }
 
-
     var url = ReconView.getContextPath()+'/webapi/details/'+wricef+'/'+errors+'/startDate/'+sDate+'/endDate/'+eDate;
+    if(currencyCode){
+        url+= '/currencyCode/'+currencyCode;
+    }
+
     $.ajax({
         url: url,
         dataType: 'json'
@@ -64,7 +68,16 @@ $(document).ready(function(ReconView) {
                 //scrollX: true,
                 pageLength: 25,
                 columns:response.columns,
-                columnDefs : [],
+                columnDefs : [{
+                 targets: '_all',
+                 render:function(data, type, row, meta){
+                    if(meta.settings.aoColumns[meta.col].format == 'number'){
+                        data =  parseInt(data, 10);
+                        return data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    }
+                    return data;
+                 }
+                }],
                 language: {
                     info:           "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",
                     infoFiltered:   "(filtered from _MAX_ total entries)",
@@ -80,7 +93,6 @@ $(document).ready(function(ReconView) {
             $("#serviceTable_length").on('change', function() {
                 serviceTable.page.len( $(this).val() ).draw();
             });
-
 
             setTimeout(function () {
                 $( "#serviceDetailsBody" ).collapse();

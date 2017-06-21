@@ -1,17 +1,28 @@
 package com.wiley.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by sravuri on 5/26/17.
  */
 public class DynamicColumn {
     public final String title;
     public final String data;
-    public final String defaultContent;
+    public final String defaultContent ="";
 
-    public DynamicColumn(String title, String data) {
+    @JsonProperty("class")
+    public final String className;
+    public String format;
+
+    public DynamicColumn(String title, String data, String className) {
         this.title = title;
         this.data = data;
-        this.defaultContent="";
+        this.className = className;
+    }
+
+    public DynamicColumn(String title, String data, String className, String format) {
+        this(title, data, className);
+        this.format= format;
     }
 
     @Override
@@ -19,6 +30,8 @@ public class DynamicColumn {
         return "DynamicColumn{" +
                 "title='" + title + '\'' +
                 ", data='" + data + '\'' +
+                ", className='" + className + '\'' +
+                ", format='" + format + '\'' +
                 '}';
     }
 }

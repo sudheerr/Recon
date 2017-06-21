@@ -1,5 +1,6 @@
 package com.wiley.dao;
 
+import com.wiley.model.DynamicColumn;
 import com.wiley.model.DynamicRow;
 import com.wiley.model.ReconDetailResponse;
 import com.wiley.service.UtilService;
@@ -29,15 +30,7 @@ import static com.wiley.ApplicationConstants.*;
 @Service
 public class ProductsDAO extends GenericDAO {
 
-    private final UtilService utilService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductsDAO.class);
-
-    @Autowired
-    private ProductsDAO(UtilService utilService) {
-        this.utilService = utilService;
-    }
-
 
     public ReconDetailResponse getProductDetails(Timestamp startDate, Timestamp endDate, String errorSrc){
 
@@ -59,9 +52,7 @@ public class ProductsDAO extends GenericDAO {
                         rs.getString("PRODUCT_TYPE"),
                         createDateStr,
                         rs.getString("STATUS_CODE"),
-                        rs.getString("STATUS_MSG"),
-                        null,
-                        null
+                        rs.getString("STATUS_MSG")
                 );
             }
         }));
@@ -75,14 +66,15 @@ public class ProductsDAO extends GenericDAO {
 
         List<DynamicRow> rows = simpleJdbcCall.executeObject(List.class, in);
 
-        List<String> columns = new ArrayList<>();
-        columns.add("Material Number");
-        columns.add("Product Type");
-        columns.add("Posted Date");
-        columns.add("Error Code");
-        columns.add("Error Message");
+        List<DynamicColumn> columns = new ArrayList<>();
+        columns.add(new DynamicColumn("Material Number","field1",""));
+        columns.add(new DynamicColumn("Product Type","field2",""));
+        columns.add(new DynamicColumn("Posted Date","field3",""));
+        columns.add(new DynamicColumn("Error Code","field4",""));
+        columns.add(new DynamicColumn("Error Message","field5",""));
 
-        return  utilService.createResponse(columns, rows, SDF.format(startDate), SDF.format(endDate),
+
+        return  getUtilService().createResponse(columns, rows, SDF.format(startDate), SDF.format(endDate),
                         "UpdateProductMasterInbound", "JANIS", "SAP", "I0203.1");
     }
 

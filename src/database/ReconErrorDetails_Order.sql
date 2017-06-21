@@ -4,6 +4,7 @@ CREATE OR REPLACE PACKAGE recon_order_pkg  AS
   endDate IN Timestamp,
   errcode IN Varchar2,
   srcSystem IN Varchar2,
+  currencyCode IN Varchar2,
   c_results OUT SYS_REFCURSOR
   ); 
 END recon_order_pkg;
@@ -14,26 +15,31 @@ CREATE OR REPLACE PACKAGE BODY recon_order_pkg AS
       endDate IN Timestamp,
       errcode IN Varchar2,
       srcSystem IN Varchar2,
+      currencyCode IN Varchar2,
       c_results OUT SYS_REFCURSOR
       )
   AS
     log varchar2(1000);
     user_name varchar2(20);
-    filterCondn varchar2(100);
-    
+    filterCondn varchar2(200);
+
     BEGIN
     user_name := 'Admin';
     log := 'Begin Orders Fetch errors ' || startDate || ' ' || endDate || ' ' || errcode;
     INSERT INTO svc_logs( APPLICATION,LOG_LEVEL, LOG_LINE, log_text, create_user, create_date) VALUES ('recon_order_errors', 'INFO', '1.1', log, user_name, sysdate);
-    
+
     IF errcode = 'SAP' THEN
-          filterCondn:= ' WHERE STATUS_FOUND=''FoundInSAP'' and STATUS_CODE != ''Success''';
+        filterCondn:= ' WHERE STATUS_FOUND=''FoundInSAP'' and STATUS_CODE != ''Success''';
     ELSIF errcode = 'EIS' THEN
         filterCondn:= ' WHERE STATUS_FOUND=''MissingInSAP'' and SAP_EIS_ORDER is not null';
     ELSIF errcode = 'SRC' THEN
         filterCondn:= ' WHERE STATUS_FOUND=''MissingInSAP'' and SAP_EIS_ORDER is null';
     ELSE
         filterCondn:= ' WHERE 1!=1';
+    END IF;
+
+    IF UPPER(currencyCode) != 'ALL' THEN
+          filterCondn:= filterCondn || ' and CURRENCY_CODE ='''||currencyCode||'''';
     END IF;
 
     filterCondn:= filterCondn || ' and SOURCE_SYSTEM = '''||srcSystem||'''';
@@ -75,7 +81,6 @@ ON CORE_SAP.SUB_ORD_REF_NUM = EIS_ORDER.SUB_ORD_REF_NUM)' || filterCondn ;
 
     END recon_order_errors;
 END recon_order_pkg;
-
 
 --select * from svc_logs order by log_id desc;
 --var results refcursor;
