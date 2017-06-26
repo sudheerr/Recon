@@ -12,7 +12,7 @@ public class DynamicColumn {
 
     @JsonProperty("class")
     public final String className;
-    public String format;
+    public ColumnType columnType;
 
     public DynamicColumn(String title, String data, String className) {
         this.title = title;
@@ -20,9 +20,9 @@ public class DynamicColumn {
         this.className = className;
     }
 
-    public DynamicColumn(String title, String data, String className, String format) {
+    public DynamicColumn(String title, String data, String className, ColumnType columnType) {
         this(title, data, className);
-        this.format= format;
+        this.columnType= columnType;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class DynamicColumn {
                 "title='" + title + '\'' +
                 ", data='" + data + '\'' +
                 ", className='" + className + '\'' +
-                ", format='" + format + '\'' +
+                ", columnType='" + columnType + '\'' +
                 '}';
     }
 }

@@ -1,28 +1,18 @@
 
 /* START NAV MENU */
 nav {
-   /* width: 1260px;
-    height: 35px;*/
     height: 24px;
     font-size: 11px;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-weight: bold;
     text-align: left;
     padding-left: 1em;
-   /* text-shadow: 1px 2px 1px #FFFFFF;*/
-  /* background-color: #1E0359
-   background-color: #0431B4;*/
-   background-color:#D3E7F7;
-   padding-top: 0px;
+    background-color:#D3E7F7;
+    padding-top: 0px;
 	padding-bottom: 6px;
 	top: 7px;
-    
-       
-   
-   /* border-radius: 8px;*/
 }
- 
- 
+
 nav ul {
   height: auto;
     padding: 8px 0px;
@@ -35,16 +25,11 @@ padding: 20px;  }
  /*Changes */
 nav a {
  text-decoration: none;
-   /* color: #E5E4E2;*/
    color:#000000;
-  /*  padding: 8px 8px 8px 8px;*/
-  
 }
  
 nav ul li a:hover { 
- /* background: #617F8A;
- background:#C1ECFA */
- background: #FFFFFF
+ background: #FFFFFF;
 }
  
 nav li:hover ul {
@@ -60,7 +45,6 @@ nav li:hover li {
 }
  
 nav li:hover a { 
- /* background: #FFFFFF;*/ 
   background:#0431B4;
   height:30px; /* Height of lower-level nav items is shorter than main level */
 }
@@ -74,9 +58,6 @@ nav ul li ul li a {
 }
  
 /* END NAV MENU */
-
-
-
 
 
 /* =============================================================================
@@ -108,7 +89,6 @@ nav ul li ul li a {
 .clearfix { zoom: 1; }
 
 
-
 /* =============================================================================
    PLACEHOLDER Media Queries for Responsive Design.
    These override the primary ('mobile first') styles
@@ -124,7 +104,6 @@ nav ul li ul li a {
   /* Style adjustments for viewports 768px and over go here */
 
 }
-
 
 /* =============================================================================
    Print styles.
@@ -159,18 +138,12 @@ tr#even
 {
 border-width : 0px; 
 background-color: #46C646;
-/*background-color: #087830;*/
-/*background-color: #6A92B3*/
-background-color:#D3E7F7;
 }
 
 tr#odd
 {
 border-width : 0px; 
 background-color: #E1E100;
-/*background-color: #f0e68c;*/
-/*background-color:#93B7D5;*/
-background-color:#FFFFFF
 }
 
 td p#para
@@ -208,8 +181,6 @@ td p span#spaninactive
 font-size: 10pt; font-family: 'Arial', 'Helvetica', sans-serif; font-style: normal; font-weight: normal; color: #5600AF; background-color: transparent; text-decoration: none;
 }
 .banner {
-	/*position: absolute;
-	height: 75px;*/
 	height: .75em;
 	background: url(../img/bg-banner.gif) repeat-x;
 	text-align: center;

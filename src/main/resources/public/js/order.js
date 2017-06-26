@@ -1,20 +1,4 @@
 $(document).ready(function () {
-
-    $body = $("body");
-    $(document).on({
-        ajaxStart: function () {
-            $body.addClass("loading");
-        },
-        ajaxStop: function () {
-            $body.removeClass("loading");
-        }
-    });
-
-    // Inserting row to filtering
-    $('#serviceTable thead tr#filterrow th').each(function () {
-        $(this).html('<div class="rounded"><input style="width:100%" type="text"/></div>');
-    });
-
     var start = moment().subtract(1, 'days');
     var end = moment();
     var minDate = moment().subtract(100, 'days');
@@ -28,13 +12,10 @@ $(document).ready(function () {
         endDate: start,
         maxDate: start,
         minDate: minDate,
-        dateLimit: {
-            days: 6
-        },
         ranges: {
             'Yesterday': [start, start],
-            'Week To Day': [moment().startOf('week'), moment().endOf('week')],
-            'Month To Day': [moment().startOf('month'), moment().endOf('month')]//,
+            'Week To Day': [moment().startOf('week'), start],
+            'Month To Day': [moment().startOf('month'), start]//,
             //'Quarter To Day': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, cb);
@@ -81,26 +62,42 @@ $(document).ready(function () {
                 targets: [5,6,7,8,9,10,11,12,13],
                 className: 'dt-right',
                 render: function (data, type, row) {
-                    return data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    if(data>0){
+                    var curSymbol = ReconView.getSymbolFromCurrency(row.currency);
+                    return (curSymbol?curSymbol:'') + data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    }
+                    return data;
                 }
-            }, {
+            },
+            {
                 targets: [7,10,13],
                 fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                     if (sData > 0) {
+                       var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
+                       var sDataFormatted = (curSymbol?curSymbol:'') + sData.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+
                        var errorSrc =  (iCol===7)?'SRC':(iCol===10?'EIS':'SAP');
                                            var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
                                                + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors='+errorSrc
-                                               + '&currencyCode='+oData.currency+'">' + sData + '</a>';
+                                               + '&currencyCode='+oData.currency+'">' + sDataFormatted + '</a>';
                        $(nTd).html(htmlLink).addClass('error-cell');
                    }
                 }
-            }, {
+            },
+            {
                  targets: [8],
                  fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                    if((oData.srcSuccess !== oData.eisTotal)){
+
+                        var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
+                        var sDataFormatted = (curSymbol?curSymbol:'') + sData.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                        if(oData.eisTotal ===0 ){
+                            sDataFormatted =0;
+                        }
+
                          var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
                                                                          + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC'
-                                                                         + '&currencyCode='+oData.currency+'">' + sData + '</a>';
+                                                                         + '&currencyCode='+oData.currency+'">' + sDataFormatted + '</a>';
                          $(nTd).html(htmlLink).addClass('warning-cell');
                          $(nTd).attr('title', 'SRC Success is not same as EIS Total');
                      }
@@ -128,6 +125,7 @@ $(document).ready(function () {
                         i : 0;
             };
 
+            //#FIXME Not correct as value is in different currencies.
             for (var i = 5; i <= 13; i++) {
                 var total = api
                     .column(i)
@@ -164,6 +162,15 @@ $(document).ready(function () {
 
     var buttons = new $.fn.dataTable.Buttons(serviceTable, {
         buttons: [{
+            extend: 'excelHtml5',
+            titleAttr: 'Export to Excel',
+            text: '<span class="glyphicon glyphicon-download-alt"></span>',
+            exportOptions: {
+                modifier: {
+                    page: 'current'
+                }
+            }
+        },{
             titleAttr: 'Toggle Filter',
             text: '<span class="glyphicon glyphicon-filter"></span>',
             action: function () {
@@ -179,13 +186,14 @@ $(document).ready(function () {
                 serviceTable.columns().search('').draw();
                 $(serviceTable.columns().header()).removeClass('appliedFilter');
             }
-        }, {
-            extend: 'excelHtml5',
+        },{
             titleAttr: 'Export to Excel',
             text: '<span class="glyphicon glyphicon-download-alt"></span>',
-            exportOptions: {
-                modifier: {
-                    page: 'current'
+            action: function () {
+                if (ReconView.isSafari()) {
+                    $('#dialog3').dialog('open');
+                } else {
+                    $('#dialog2').dialog('open');
                 }
             }
         }
@@ -205,6 +213,9 @@ $(document).ready(function () {
         }
     }).container().appendTo($('#serviceTableHeader'));
 
+    // $("#serviceTable_length").on('change', function () {
+    //     serviceTable.page.len($(this).val()).draw();
+    // });
     // Apply the filter
     $("#filterrow input").on('keyup change', function () {
         var column = serviceTable.column($(this).parent().parent().index() + ':visible');
@@ -216,10 +227,4 @@ $(document).ready(function () {
             header.addClass('appliedFilter');
         }
     });
-
-
-    $("#serviceTable_length").on('change', function () {
-        serviceTable.page.len($(this).val()).draw();
-    });
-
 });

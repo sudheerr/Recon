@@ -1,18 +1,5 @@
 $(document).ready(function () {
-    $body = $("body");
-    $(document).on({
-        ajaxStart: function () {
-            $body.addClass("loading");
-        },
-        ajaxStop: function () {
-            $body.removeClass("loading");
-        }
-    });
 
-    // Inserting row to filtering
-    // $('#serviceTable thead tr#filterrow th').each(function() {
-    //     $(this).html('<div class="rounded"><input style="width:100%" type="text"/></div>');
-    // });
 
     var start = moment().subtract(1, 'days');
     var end = moment();
@@ -27,14 +14,17 @@ $(document).ready(function () {
         endDate: start,
         maxDate: start,
         minDate: minDate,
-        dateLimit: {
-            days: 6
-        },
+        // dateLimit: {
+        //     days: 6
+        // },
+        // locale: {
+        //     customRangeLabel: 'Custom Range (Max 7 days)'
+        // },
         ranges: {
             'Yesterday': [start, start],
-            'Week To Day': [moment().startOf('week'), moment().endOf('week')],
-            'Month To Day': [moment().startOf('month'), moment().endOf('month')]//,
-            //'Quarter To Day': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            'Week To Day': [moment().startOf('week'), start],
+            'Month To Day': [moment().startOf('month'), start],
+            'Quarter To Day': [moment().startOf('quarter'), start]//TODO Change to financial Quarter
         }
     }, cb);
     cb(start, start);
@@ -80,9 +70,9 @@ $(document).ready(function () {
             fnCreatedCell: function (nTd,
                                      sData, oData, iRow, iCol) {
                 if (sData > 0) {
-                    var errorSrc =  (iCol===6)?'SRC':(iCol===9?'EIS':'SAP');
+                    var errorSrc = (iCol === 6) ? 'SRC' : (iCol === 9 ? 'EIS' : 'SAP');
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors='+errorSrc+'">' + sData + '</a>';
+                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=' + errorSrc + '">' + sData + '</a>';
                     $(nTd).html(htmlLink).addClass('error-cell');
                 }
             }
@@ -96,9 +86,9 @@ $(document).ready(function () {
             targets: [7],
             className: 'dt-right',
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                if((oData.srcSuccess !== oData.eisTotal)){
+                if ((oData.srcSuccess !== oData.eisTotal)) {
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                                                            + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC">' + sData + '</a>';
+                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC">' + sData + '</a>';
                     $(nTd).html(htmlLink).addClass('warning-cell');
                     $(nTd).attr('title', 'SRC Success is not same as EIS Total');
                 }
@@ -119,6 +109,15 @@ $(document).ready(function () {
 
     var buttons = new $.fn.dataTable.Buttons(serviceTable, {
         buttons: [{
+            extend: 'excelHtml5',
+            titleAttr: 'Export to Excel',
+            text: '<span class="glyphicon glyphicon-download-alt"></span>',
+            exportOptions: {
+                modifier: {
+                    page: 'current'
+                }
+            }
+        }, {
             titleAttr: 'Toggle Filter',
             text: '<span class="glyphicon glyphicon-filter"></span>',
             action: function () {
@@ -135,12 +134,13 @@ $(document).ready(function () {
                 $(serviceTable.columns().header()).removeClass('appliedFilter');
             }
         }, {
-            extend: 'excelHtml5',
             titleAttr: 'Export to Excel',
             text: '<span class="glyphicon glyphicon-download-alt"></span>',
-            exportOptions: {
-                modifier: {
-                    page: 'current'
+            action: function () {
+                if (ReconView.isSafari()) {
+                    $('#dialog3').dialog('open');
+                } else {
+                    $('#dialog2').dialog('open');
                 }
             }
         }
@@ -160,6 +160,10 @@ $(document).ready(function () {
         }
     }).container().appendTo($('#serviceTableHeader'));
 
+    // Not required
+    // $("#serviceTable_length").on('change', function () {
+    //     serviceTable.page.len($(this).val()).draw();
+    // });
     // Apply the filter
     $("#filterrow input").on('keyup change', function () {
         var column = serviceTable.column($(this).parent().parent().index() + ':visible');
@@ -171,9 +175,4 @@ $(document).ready(function () {
             header.addClass('appliedFilter');
         }
     });
-
-    $("#serviceTable_length").on('change', function () {
-        serviceTable.page.len($(this).val()).draw();
-    });
-
 });

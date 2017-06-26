@@ -20,18 +20,23 @@ public class DynamicRow {
     public final String field6;
     public final String field7;
 
+    /* This field particularly holds the currency type, if any for that row.
+    This field can't be at column level, as the currency will be different for each record.
+     */
+    public final String currency;
+
     /*
     Having multiple constructor makes the invoking code cleaner(without passing nulls)
     * */
     public DynamicRow(String field1, String field2, String field3, String field4, String field5) {
-        this(field1,field2,field3,field4,field5,null,null);
+        this(field1,field2,field3,field4,field5,null,null, null);
     }
 
     public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6) {
-        this(field1,field2,field3,field4,field5,field6,null);
+        this(field1,field2,field3,field4,field5,field6,null, null);
     }
 
-    public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6, String field7) {
+    public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6, String field7, String currency) {
         this.field1 = field1;
         this.field2 = field2;
         this.field3 = field3;
@@ -39,6 +44,7 @@ public class DynamicRow {
         this.field5 = field5;
         this.field6 = field6;
         this.field7 = field7;
+        this.currency = currency;
     }
 
     @Override

@@ -7,25 +7,15 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Reconciliation Report</title>
-<link rel="stylesheet" type="text/css"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css">
 <link rel="stylesheet" type="text/css"
 	href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap4.min.css" />
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/default-styles.css">
-<link rel="stylesheet" href="css/wiley.css">
-<style type="text/css">
-td.dt-center { text-align: center; }
-td.dt-right { text-align: right; }
-</style>
 
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 <!--
         Might need to Uncomment it, when bootstrap plugins are being used -->
-<script type="text/javascript"
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf8"
 	src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"
@@ -43,9 +33,12 @@ td.dt-right { text-align: right; }
 	src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/ellipsis.js"></script>
 
 	<!-- DateRange Picker -->
-	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+	<script type="text/javascript" src="js/lib/moment.min.js"></script>
+	<script type="text/javascript" src="js/lib/daterangepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/lib/daterangepicker.css" />
+	<link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.css">
+	<link rel="stylesheet" href="css/styles.css">
+	<link rel="stylesheet" href="css/default-styles.css">
 
 </head>
 <body>
@@ -128,6 +121,17 @@ td.dt-right { text-align: right; }
 		</div>
 		</div>
 	</div>
+	<div id="dialog2" style="display: none;">
+		<div class="form-inline">
+			<span>The file about to download contains filtered(if applied) records. Remove any applied filters to download complete set of records.</span>
+		</div>
+	</div>
+	<div id="dialog3" style="display: none;">
+		<div class="form-inline">
+			<span>File download is not supported in Safari. Please use either Chrome or Internet Explorer.</span>
+		</div>
+	</div>
+
 	<div id="footer"></div>
 	<a class="cd-top" href="#0">Top</a>
 	<div class="modal">

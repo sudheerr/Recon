@@ -66,13 +66,6 @@ public class ReconController {
         this.utilService = utilService;
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
-    @ResponseBody
-    public UserDTO getUserDetails(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return (UserDTO) session.getAttribute(ApplicationConstants.USER_DTO);
-    }
-
     /**
      * @param startDate YYYYMMDD
      * @param endDate   YYYYMMDD
@@ -140,6 +133,11 @@ public class ReconController {
     ) {
         return getDetails(wricef, errorsSrc, startDate, endDate, currencyCode);
     }
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    @ResponseBody
+    public UserDTO getUserDetails(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        return  (UserDTO) session.getAttribute(ApplicationConstants.USER_DTO);
+    }
 }
-
-

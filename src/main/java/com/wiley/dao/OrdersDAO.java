@@ -1,5 +1,6 @@
 package com.wiley.dao;
 
+import com.wiley.model.ColumnType;
 import com.wiley.model.DynamicColumn;
 import com.wiley.model.DynamicRow;
 import com.wiley.model.ReconDetailResponse;
@@ -79,7 +80,9 @@ public class OrdersDAO extends GenericDAO{
                         rs.getString("CURRENCY_CODE"),
                         rs.getString("TOTAL_PRICE"),
                         rs.getString("STATUS_CODE"),
-                        rs.getString("STATUS_MSG")
+                        rs.getString("STATUS_MSG"),
+                        null,
+                        rs.getString("CURRENCY_CODE")
                 );
             }
         }));
@@ -96,7 +99,7 @@ public class OrdersDAO extends GenericDAO{
         columns.add(new DynamicColumn("Sub Order Ref Number","field1",""));
         columns.add(new DynamicColumn("Posted Date","field2",""));
         columns.add(new DynamicColumn("Currency Code","field3",""));
-        columns.add(new DynamicColumn("Total Order Price","field4","dt-right","number"));
+        columns.add(new DynamicColumn("Total Order Price","field4","dt-right", ColumnType.CURRENCY));
         columns.add(new DynamicColumn("Error Code","field5",""));
         columns.add(new DynamicColumn("Error Message","field6",""));
 

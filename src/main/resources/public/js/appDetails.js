@@ -1,26 +1,18 @@
-$(document).ready(function(ReconView) {
+$(document).ready(function (ReconView) {
 
     function showErrorDialog(text) {
-        $( "#reconDialog p" ).text(text);
-        $( "#reconDialog" ).dialog({
-            modal:true,
+        $("#reconDialog p").text(text);
+        $("#reconDialog").dialog({
+            modal: true,
             dialogClass: "no-close",
-            buttons: [
-                {
+            buttons: [{
                     text: "OK",
-                    click: function() {
-                        $( this ).dialog( "close" );
+                    click: function () {
+                        $(this).dialog("close");
                     }
-                }
-            ]
+                }]
         });
     }
-
-    $body = $("body");
-    $(document).on({
-        ajaxStart: function() { $body.addClass("loading");    },
-        ajaxStop: function() { $body.removeClass("loading"); }
-    });
 
     var sDate = ReconView.getURLParameter('sDate');
     var eDate = ReconView.getURLParameter('eDate');
@@ -30,25 +22,25 @@ $(document).ready(function(ReconView) {
 
     //#TODO need to perform validation for all fields
 
-    if(['SRC','EIS','SAP'].indexOf(errors)>-1){
+    if (['SRC', 'EIS', 'SAP'].indexOf(errors) > -1) {
         $('#serviceTableHeader span').text(errors);
-    }else {
+    } else {
         showErrorDialog('Not a valid Error Code. Valid values are SRC, EIS, SAP.');
         return;
     }
 
-    var url = ReconView.getContextPath()+'/webapi/details/'+wricef+'/'+errors+'/startDate/'+sDate+'/endDate/'+eDate;
-    if(currencyCode){
-        url+= '/currencyCode/'+currencyCode;
+    var url = ReconView.getContextPath() + '/webapi/details/' + wricef + '/' + errors + '/startDate/' + sDate + '/endDate/' + eDate;
+    if (currencyCode) {
+        url += '/currencyCode/' + currencyCode;
     }
 
     $.ajax({
         url: url,
         dataType: 'json'
-    }).done(function(response) {
+    }).done(function (response) {
 
-        if(response){
-            if(response.errorFlag){
+        if (response) {
+            if (response.errorFlag) {
                 showErrorDialog(response.errorMsg);
                 return;
             }
@@ -62,26 +54,37 @@ $(document).ready(function(ReconView) {
             formControls[5].textContent = response.wricef;
 
             var serviceTable = $('#serviceTable').DataTable({
-                data:response.data,
-                scrollY:'70vh',
+                data: response.data,
+                scrollY: '70vh',
                 scrollCollapse: true,
                 //scrollX: true,
                 pageLength: 25,
-                columns:response.columns,
-                columnDefs : [{
-                 targets: '_all',
-                 render:function(data, type, row, meta){
-                    if(meta.settings.aoColumns[meta.col].format == 'number'){
-                        data =  parseInt(data, 10);
-                        return data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                columns: response.columns,
+                columnDefs: [{
+                    targets: '_all',
+                    render: function (data, type, row, meta) {
+                        if (meta.settings.aoColumns[meta.col].columnType == 'NUMBER') {
+                            data = parseInt(data, 10);
+                            return data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                        }
+                        if (meta.settings.aoColumns[meta.col].columnType == 'CURRENCY') {
+                            data = parseInt(data, 10);
+                            if (Number.isNaN(data)) {
+                                return 0;
+                            }
+                            if (data > 0) {
+                                var curSymbol = ReconView.getSymbolFromCurrency(row.currency);
+                                return (curSymbol ? curSymbol : '') + data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                            }
+                            return data.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                        }
+                        return data;
                     }
-                    return data;
-                 }
                 }],
                 language: {
-                    info:           "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",
-                    infoFiltered:   "(filtered from _MAX_ total entries)",
-                    infoPostFix:    "",
+                    info: "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    infoPostFix: "",
                     paginate: {
                         next: "<i class='glyphicon glyphicon-menu-right'></i>",
                         previous: "<i class='glyphicon glyphicon-menu-left'></i>"
@@ -90,58 +93,71 @@ $(document).ready(function(ReconView) {
                 lengthChange: false
             });
 
-            $("#serviceTable_length").on('change', function() {
-                serviceTable.page.len( $(this).val() ).draw();
+            $("#serviceTable_length").on('change', function () {
+                serviceTable.page.len($(this).val()).draw();
             });
 
             setTimeout(function () {
-                $( "#serviceDetailsBody" ).collapse();
+                $("#serviceDetailsBody").collapse();
             }, 2000);
         }
     });
+    //
+    // var buttons = new $.fn.dataTable.Buttons(serviceTable, {
+    //     buttons: [{
+    //         extend: 'excelHtml5',
+    //         titleAttr: 'Export to Excel',
+    //         text: '<span class="glyphicon glyphicon-download-alt"></span>',
+    //         exportOptions: {
+    //             modifier: {
+    //                 page: 'current'
+    //             }
+    //         }
+    //     },{
+    //         titleAttr: 'Toggle Filter',
+    //         text: '<span class="glyphicon glyphicon-filter"></span>',
+    //         action: function () {
+    //             $('#filterrow').toggle();
+    //         }
+    //     }, {
+    //         titleAttr: 'Clear ALL Filters',
+    //         text: '<span class="glyphicon glyphicon-remove-circle"></span>',
+    //         action: function () {
+    //             $('#filterrow').find('input').each(function (index, input) {
+    //                 $(input).val('');
+    //             });
+    //             serviceTable.columns().search('').draw();
+    //             $(serviceTable.columns().header()).removeClass('appliedFilter');
+    //         }
+    //     },{
+    //         titleAttr: 'Export to Excel',
+    //         text: '<span class="glyphicon glyphicon-download-alt"></span>',
+    //         action: function () {
+    //             if (isSafari()) {
+    //                 $('#dialog3').dialog('open');
+    //             } else {
+    //                 $('#dialog2').dialog('open');
+    //             }
+    //         }
+    //     }
+    //     ],
+    //     dom: {
+    //         container: {
+    //             tag: 'span',
+    //             className: 'pull-right svcBtn'
+    //         },
+    //         buttonContainer: {
+    //             tag: 'span'
+    //         },
+    //         button: {
+    //             tag: 'a',
+    //             className: 'btn'
+    //         }
+    //     }
+    // }).container().appendTo($('#serviceTableHeader'));
 
-    /*   var buttons = new $.fn.dataTable.Buttons(serviceTable, {
-     buttons: [{
-     titleAttr: 'Toggle Filter',
-     text: '<span class="glyphicon glyphicon-filter"></span>',
-     action: function() {
-     $('#filterrow').toggle();
-     }
-     },{
-     titleAttr: 'Clear ALL Filters',
-     text: '<span class="glyphicon glyphicon-remove-circle"></span>',
-     action: function() {
-     $('#filterrow').find('input').each(function(index, input) { $(input).val(''); });
-     serviceTable.columns().search('').draw();
-     $(serviceTable.columns().header()).removeClass('appliedFilter');
-     }
-     }, {
-     extend: 'excelHtml5',
-     titleAttr: 'Export to Excel',
-     text: '<span class="glyphicon glyphicon-download-alt"></span>',
-     exportOptions: {
-     modifier: {
-     page: 'current'
-     }
-     }
-     }
-     ],
-     dom: {
-     container: {
-     tag: 'span',
-     className: 'pull-right svcBtn'
-     },
-     buttonContainer: {
-     tag: 'span'
-     },
-     button: {
-     tag: 'a',
-     className: 'btn'
-     }
-     }
-     }).container().appendTo($('#serviceTableHeader'));
+    $("#serviceTable_length").on('change', function () {
+        serviceTable.page.len($(this).val()).draw();
+    });
 
-     $("#serviceTable_length").on('change', function() {
-     serviceTable.page.len( $(this).val() ).draw();
-     });*/
 }(ReconView));
