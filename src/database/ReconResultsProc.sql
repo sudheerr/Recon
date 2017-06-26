@@ -262,3 +262,6 @@ CREATE OR REPLACE PACKAGE BODY recon_pkg AS
         INSERT INTO svc_logs( APPLICATION,LOG_LEVEL, LOG_LINE, log_text, create_user, create_date) VALUES ('ServiceCatalog', 'INFO', '1.3', 'proc completed', user_name, current_date);
   END recon_populate_results;
 END recon_pkg;
+
+--call recon_pkg.recon_populate_results(TO_TIMESTAMP ('2017/06/01 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), sysdate-1);
+--commit;

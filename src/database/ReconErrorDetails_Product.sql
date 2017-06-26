@@ -65,3 +65,7 @@ CREATE OR REPLACE PACKAGE BODY recon_product_pkg AS
     ) EIS_PRODUCT ON EIS_PRODUCT.SAP_MATERIAL_NUMBER = CORE_SAP_FINAL.CORE_MATNUM )' || filterCondn;
     END recon_product_errors;
 END recon_product_pkg;
+
+--var results refcursor;
+--exec recon_product_pkg.recon_product_errors( TO_TIMESTAMP ('2017/06/19 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), TO_TIMESTAMP ('2017/06/25 23:59:59', 'YYYY/MM/DD HH24:MI:SS'), 'EIS', :results)
+--print results

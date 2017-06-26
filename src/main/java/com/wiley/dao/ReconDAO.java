@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
 
-import static com.wiley.ApplicationConstants.EISADMIN;
+import static com.wiley.ApplicationConstants.EISRECON;
 import static com.wiley.ApplicationConstants.END_DATE;
 import static com.wiley.ApplicationConstants.START_DATE;
 
@@ -74,7 +74,7 @@ public class ReconDAO extends GenericDAO{
 
     public void loadResultsData(Timestamp startDate, Timestamp endDate){
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
-        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_pkg").withProcedureName("recon_populate_results");
+        simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("recon_pkg").withProcedureName("recon_populate_results");
 
         simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
         simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));

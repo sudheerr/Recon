@@ -83,7 +83,7 @@ ON CORE_SAP.SUB_ORD_REF_NUM = EIS_ORDER.SUB_ORD_REF_NUM)' || filterCondn ;
 END recon_order_pkg;
 
 --select * from svc_logs order by log_id desc;
-var results refcursor;
-exec recon_order_pkg.recon_order_errors( TO_TIMESTAMP ('2017/06/21 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), TO_TIMESTAMP ('2017/06/23 23:59:59', 'YYYY/MM/DD HH24:MI:SS'), 'EIS', 'CSS', 'ALL',:results);
+--var results refcursor;
+--exec recon_order_pkg.recon_order_errors( TO_TIMESTAMP ('2017/06/21 00:00:00', 'YYYY/MM/DD HH24:MI:SS'), TO_TIMESTAMP ('2017/06/23 23:59:59', 'YYYY/MM/DD HH24:MI:SS'), 'EIS', 'CSS', 'ALL',:results);
 --print results
 --COMMIT

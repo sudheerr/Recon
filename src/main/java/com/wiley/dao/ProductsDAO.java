@@ -37,7 +37,7 @@ public class ProductsDAO extends GenericDAO {
         LOGGER.info("parameters passed : startDate = [" + startDate + "], endDate = [" + endDate + "], errorSrc = [" + errorSrc + "]");
 
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
-        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_product_pkg").withProcedureName("recon_product_errors");
+        simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("recon_product_pkg").withProcedureName("recon_product_errors");
 
         simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
         simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));

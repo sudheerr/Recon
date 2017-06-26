@@ -62,7 +62,7 @@ public class OrdersDAO extends GenericDAO{
         }
 
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
-        simpleJdbcCall.withSchemaName(EISADMIN).withCatalogName("recon_order_pkg").withProcedureName("recon_order_errors");
+        simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("recon_order_pkg").withProcedureName("recon_order_errors");
 
         simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
         simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));

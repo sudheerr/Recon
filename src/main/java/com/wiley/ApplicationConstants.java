@@ -22,7 +22,7 @@ public class ApplicationConstants {
         add("I0343");
     }};
 
-    public static final String EISADMIN = "eisadmin";
+    public static final String EISRECON = "eisrecon";
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
     public static final String ERROR_CODE = "errcode";
