@@ -15,8 +15,8 @@ $(document).ready(function () {
         ranges: {
             'Yesterday': [start, start],
             'Week To Day': [moment().startOf('week'), start],
-            'Month To Day': [moment().startOf('month'), start]//,
-            //'Quarter To Day': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            'Month To Day': [moment().startOf('month'), start],
+            'Quarter To Day': [moment().startOf('quarter'), start]
         }
     }, cb);
     cb(start, start);

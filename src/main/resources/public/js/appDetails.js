@@ -1,19 +1,22 @@
 $(document).ready(function (ReconView) {
 
-    function showErrorDialog(text) {
-        $("#reconDialog p").text(text);
-        $("#reconDialog").dialog({
-            modal: true,
-            dialogClass: "no-close",
-            buttons: [{
-                text: "OK",
-                click: function () {
-                    $(this).dialog("close");
-                }
-            }]
-        });
+
+    var sDate = ReconView.getURLParameter('sDate');
+    var eDate = ReconView.getURLParameter('eDate');
+    var wricef = ReconView.getURLParameter('wricef');
+    var errors = ReconView.getURLParameter('errors');
+    var currencyCode = ReconView.getURLParameter('currencyCode');
+
+    //#TODO need to perform validation for all fields
+
+    if (['SRC', 'EIS', 'SAP'].indexOf(errors) > -1) {
+        $('#serviceTableHeader span').text(errors);
+    } else {
+        showErrorDialog('Not a valid Error Code. Valid values are SRC, EIS, SAP.');
+        return;
     }
-    //Listening to grid init event, then configure buttons settings.
+
+    //Listening to grid init event, then configure additional settings.
     $('#serviceTable').on('init.dt', function (e, settings) {
         var api = new $.fn.dataTable.Api(settings);
 
@@ -21,7 +24,18 @@ $(document).ready(function (ReconView) {
             api.table().page.len($(this).val()).draw();
         });
 
-        //TODO Need to create filter row dynamically, so the grid can be filtered.
+        // Apply the filter
+        $("#filterrow input").on('keyup change', function () {
+            var column = serviceTable.column($(this).parent().parent().index() + ':visible');
+            column.search(this.value).draw();
+            var header = $(column.header());
+            if (!this.value) {
+                header.removeClass('appliedFilter');
+            } else {
+                header.addClass('appliedFilter');
+            }
+        });
+
         var buttons = new $.fn.dataTable.Buttons(api.table(), {
             buttons: [{
                 extend: 'excelHtml5',
@@ -32,22 +46,22 @@ $(document).ready(function (ReconView) {
                         page: 'current'
                     }
                 }
-                // },{
-                //     titleAttr: 'Toggle Filter',
-                //     text: '<span class="glyphicon glyphicon-filter"></span>',
-                //     action: function () {
-                //         $('#filterrow').toggle();
-                //     }
-                // }, {
-                //     titleAttr: 'Clear ALL Filters',
-                //     text: '<span class="glyphicon glyphicon-remove-circle"></span>',
-                //     action: function () {
-                //         $('#filterrow').find('input').each(function (index, input) {
-                //             $(input).val('');
-                //         });
-                //         serviceTable.columns().search('').draw();
-                //         $(serviceTable.columns().header()).removeClass('appliedFilter');
-                //     }
+                },{
+                    titleAttr: 'Toggle Filter',
+                    text: '<span class="glyphicon glyphicon-filter"></span>',
+                    action: function () {
+                        $('#filterrow').toggle();
+                    }
+                }, {
+                    titleAttr: 'Clear ALL Filters',
+                    text: '<span class="glyphicon glyphicon-remove-circle"></span>',
+                    action: function () {
+                        $('#filterrow').find('input').each(function (index, input) {
+                            $(input).val('');
+                        });
+                        serviceTable.columns().search('').draw();
+                        $(serviceTable.columns().header()).removeClass('appliedFilter');
+                    }
             }, {
                 titleAttr: 'Export to Excel',
                 text: '<span class="glyphicon glyphicon-download-alt"></span>',
@@ -80,22 +94,6 @@ $(document).ready(function (ReconView) {
         }, 2000);
     });
 
-
-    var sDate = ReconView.getURLParameter('sDate');
-    var eDate = ReconView.getURLParameter('eDate');
-    var wricef = ReconView.getURLParameter('wricef');
-    var errors = ReconView.getURLParameter('errors');
-    var currencyCode = ReconView.getURLParameter('currencyCode');
-
-    //#TODO need to perform validation for all fields
-
-    if (['SRC', 'EIS', 'SAP'].indexOf(errors) > -1) {
-        $('#serviceTableHeader span').text(errors);
-    } else {
-        showErrorDialog('Not a valid Error Code. Valid values are SRC, EIS, SAP.');
-        return;
-    }
-
     var url = ReconView.getContextPath() + '/webapi/details/' + wricef + '/' + errors + '/startDate/' + sDate + '/endDate/' + eDate;
     if (currencyCode) {
         url += '/currencyCode/' + currencyCode;
@@ -105,7 +103,6 @@ $(document).ready(function (ReconView) {
         url: url,
         dataType: 'json'
     }).done(function (response) {
-
         if (response) {
             if (response.errorFlag) {
                 showErrorDialog(response.errorMsg);
@@ -127,14 +124,43 @@ $(document).ready(function (ReconView) {
         formControls[5].textContent = response.wricef;
     }
 
+    function showErrorDialog(text) {
+        $("#reconDialog p").text(text);
+        $("#reconDialog").dialog({
+            modal: true,
+            dialogClass: "no-close",
+            buttons: [{
+                text: "OK",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }]
+        });
+    }
+
     function initializeGrid(columns, data) {
-         serviceTable = $('#serviceTable').DataTable({
+
+        //Create FilterRow before initialization,
+        //otherwise the filterrow is getting removed when table redrawn
+
+        var trow ='<tr>';
+        var trow2 ='<tr id="filterrow" style="display: none;">';
+        for(var i=0;i<columns.length;i++){
+            trow+='<th>'+columns[i].colTitle+'</th>';
+            trow2+='<th><div class="rounded"><input style="width:100%" type="text"/></div></th>';
+        }
+        trow+='</tr>'+trow2+'</tr>';
+
+        $('#serviceTable thead').append(trow);
+
+        serviceTable = $('#serviceTable').DataTable({
             data: data,
             scrollY: '70vh',
             scrollCollapse: true,
-            //scrollX: true,
             pageLength: 25,
             columns: columns,
+            fixedColumns: true,
+            orderCellsTop: true,
             columnDefs: [{
                 targets: '_all',
                 render: function (data, type, row, meta) {
@@ -168,6 +194,5 @@ $(document).ready(function (ReconView) {
             lengthChange: false
         });
     }
-
 
 }(ReconView));
