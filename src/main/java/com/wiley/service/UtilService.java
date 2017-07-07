@@ -1,17 +1,15 @@
 package com.wiley.service;
 
-import com.wiley.model.DynamicColumn;
-import com.wiley.model.DynamicRow;
+import com.wiley.model.UIColumn;
+import com.wiley.model.UIRow;
 import com.wiley.model.ReconDetailResponse;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.wiley.ApplicationConstants.SDF;
 import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
 
 /**
@@ -19,7 +17,7 @@ import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
  */
 @Service
 public class UtilService {
-    public ReconDetailResponse createResponse(List<DynamicColumn> columns, List<DynamicRow> rows,
+    public ReconDetailResponse createResponse(List<UIColumn> columns, List<UIRow> rows,
                                               String startDate, String endDate, String interfaceName,
                                               String source, String target, String wricef){
 

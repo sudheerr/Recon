@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * Created by sravuri on 5/26/17.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DynamicRow {
+public class UIRow {
 
     /*
     Marking the fields public lets them serializable without getters.
@@ -28,15 +28,15 @@ public class DynamicRow {
     /*
     Having multiple constructor makes the invoking code cleaner(without passing nulls)
     * */
-    public DynamicRow(String field1, String field2, String field3, String field4, String field5) {
+    public UIRow(String field1, String field2, String field3, String field4, String field5) {
         this(field1,field2,field3,field4,field5,null,null, null);
     }
 
-    public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6) {
+    public UIRow(String field1, String field2, String field3, String field4, String field5, String field6) {
         this(field1,field2,field3,field4,field5,field6,null, null);
     }
 
-    public DynamicRow(String field1, String field2, String field3, String field4, String field5, String field6, String field7, String currency) {
+    public UIRow(String field1, String field2, String field3, String field4, String field5, String field6, String field7, String currency) {
         this.field1 = field1;
         this.field2 = field2;
         this.field3 = field3;
@@ -49,7 +49,7 @@ public class DynamicRow {
 
     @Override
     public String toString() {
-        return "DynamicRow{" +
+        return "UIRow{" +
                 "field1='" + field1 + '\'' +
                 ", field2='" + field2 + '\'' +
                 ", field3='" + field3 + '\'' +

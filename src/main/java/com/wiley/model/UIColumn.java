@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by sravuri on 5/26/17.
  */
-public class DynamicColumn {
+public class UIColumn {
     public final String colTitle;
     public final String data;
     public final String defaultContent ="";
@@ -14,20 +14,20 @@ public class DynamicColumn {
     public final String className;
     public ColumnType columnType;
 
-    public DynamicColumn(String colTitle, String data, String className) {
+    public UIColumn(String colTitle, String data, String className) {
         this.colTitle = colTitle;
         this.data = data;
         this.className = className;
     }
 
-    public DynamicColumn(String title, String data, String className, ColumnType columnType) {
+    public UIColumn(String title, String data, String className, ColumnType columnType) {
         this(title, data, className);
         this.columnType= columnType;
     }
 
     @Override
     public String toString() {
-        return "DynamicColumn{" +
+        return "UIColumn{" +
                 "title='" + colTitle + '\'' +
                 ", data='" + data + '\'' +
                 ", className='" + className + '\'' +

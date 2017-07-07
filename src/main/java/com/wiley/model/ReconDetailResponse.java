@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class ReconDetailResponse {
 
-    private List<DynamicColumn> columns;
-    private List<DynamicRow> data;
+    private List<UIColumn> columns;
+    private List<UIRow> data;
     private String startDate;
     private String endDate;
     private String source;
@@ -83,19 +83,19 @@ public class ReconDetailResponse {
         this.wricef = wricef;
     }
 
-    public List<DynamicColumn> getColumns() {
+    public List<UIColumn> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<DynamicColumn> columns) {
+    public void setColumns(List<UIColumn> columns) {
         this.columns = columns;
     }
 
-    public List<DynamicRow> getData() {
+    public List<UIRow> getData() {
         return data;
     }
 
-    public void setData(List<DynamicRow> data) {
+    public void setData(List<UIRow> data) {
         this.data = data;
     }
 }

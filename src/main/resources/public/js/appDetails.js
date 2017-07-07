@@ -9,7 +9,7 @@ $(document).ready(function (ReconView) {
 
     //#TODO need to perform validation for all fields
 
-    if (['SRC', 'EIS', 'SAP'].indexOf(errors) > -1) {
+    if (['SRC', 'EIS', 'SAP', 'EIS_MISS', 'SAP_MISS'].indexOf(errors) > -1) {
         $('#serviceTableHeader span').text(errors);
     } else {
         showErrorDialog('Not a valid Error Code. Valid values are SRC, EIS, SAP.');

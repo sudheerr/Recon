@@ -16,6 +16,7 @@ public class ApplicationConstants {
     public static final SimpleDateFormat SDF_YYYYMMDD = new SimpleDateFormat("yyyyMMdd");
 
     public static final List<String> ORDER_WRICEFS = new ArrayList<String>(){{
+        add("I0212.17");
         add("I0230.6");
         add("I0230.7");
         add("I0230.8");

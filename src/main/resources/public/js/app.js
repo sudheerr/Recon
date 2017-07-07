@@ -88,9 +88,24 @@ $(document).ready(function () {
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                 if ((oData.srcSuccess !== oData.eisTotal)) {
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC">' + sData + '</a>';
+                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=EIS_MISS">' + sData + '</a>';
+
                     $(nTd).html(htmlLink).addClass('warning-cell');
                     $(nTd).attr('title', 'SRC Success is not same as EIS Total');
+                }
+            }
+        }, {
+            targets: [10],
+            className: 'dt-right',
+            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                if ((oData.eisSuccess !== oData.sapTotal)) {
+
+                    var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
+                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SAP_MISS">' + sData + '</a>';
+
+                    $(nTd).html(htmlLink).addClass('warning-cell');
+                    $(nTd).attr('title', 'EIS Success is not same as SAP Total');
+
                 }
             }
         }

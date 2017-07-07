@@ -2,7 +2,6 @@ package com.wiley;
 
 
 import com.wiley.dao.OrdersDAO;
-//import com.wiley.dao.PDMSOrdersDAO;
 import com.wiley.dao.ProductsDAO;
 import com.wiley.dao.ReconDAO;
 import com.wiley.model.ReconDetailResponse;
@@ -12,19 +11,15 @@ import com.wiley.user.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static com.wiley.ApplicationConstants.ORDER_WRICEFS;
-import static com.wiley.ApplicationConstants.SDF_YYYYMMDD;
 
 @RestController
 @RequestMapping("/webapi")
@@ -36,8 +31,6 @@ public class ReconController {
     private ProductsDAO productsDAO;
 
     private OrdersDAO ordersDAO;
-
-    //private PDMSOrdersDAO pdmsOrdersDAO;
 
     private UtilService utilService;
 
@@ -55,11 +48,6 @@ public class ReconController {
     public void setOrdersDAO(OrdersDAO ordersDAO) {
         this.ordersDAO = ordersDAO;
     }
-
-//    @Autowired
-//    public void setPdmsOrdersDAO(PDMSOrdersDAO pdmsOrdersDAO) {
-//        this.pdmsOrdersDAO = pdmsOrdersDAO;
-//    }
 
     @Autowired
     public void setUtilService(UtilService utilService) {
@@ -96,6 +84,8 @@ public class ReconController {
 
         Timestamp sDate, eDate;
         ReconDetailResponse response = new ReconDetailResponse();
+
+        //Currency code is specific to WRICEF that are Orders.
         currencyCode = (currencyCode==null || currencyCode.length()==0)?"ALL":currencyCode;
         try {
             sDate = utilService.getStartofDay(startDate);
@@ -110,11 +100,7 @@ public class ReconController {
 
         if (wricef.equals("I0203.1")) {
             return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
-        }
-        /*else if (wricef.equals("I0343")) {
-            return pdmsOrdersDAO.getOrderDetails(sDate, eDate, errorsSrc);
-        }*/
-        else if (ORDER_WRICEFS.contains(wricef)) {
+        }else if (ORDER_WRICEFS.contains(wricef)) {
             return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef, currencyCode);
         } else {
             response.setErrorFlag(true);
@@ -123,6 +109,7 @@ public class ReconController {
         }
     }
 
+    //This method is specific to Orders, as it contains additional filter(Currencycode)
     @RequestMapping(value = "/details/{wricef}/{errorsSrc}/startDate/{startDate}/endDate/{endDate}/currencyCode/{currencyCode}", method = RequestMethod.GET)
     @ResponseBody
     public ReconDetailResponse getOrderDetails(@PathVariable("wricef") String wricef,
