@@ -29,11 +29,13 @@ public class ReconResultMapper implements RowMapper<ReconResult> {
         result.setEisTotal(rs.getInt(12));
         result.setEisSuccess(rs.getInt(13));
         result.setEisFailure(rs.getInt(14));
-        result.setSapTotal(rs.getInt(15));
-        result.setSapSuccess(rs.getInt(16));
-        result.setSapFailure(rs.getInt(17));
+        result.setTgtTotal(rs.getInt(15));
+        result.setTgtSuccess(rs.getInt(16));
+        result.setTgtFailure(rs.getInt(17));
         result.setCurrency(rs.getString(18));
         result.setSrcCount(rs.getInt(19));
+        result.setEisMissing(rs.getInt(21));
+        result.setTgtMissing(rs.getInt(22));
        // result.setFlowDirection(rs.getString(18));
 
         return result;

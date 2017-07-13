@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    var start = moment().subtract(1, 'days');
-    var end = moment();
+    var yesterday = moment().subtract(1, 'days');
+    //var end = moment();
     var minDate = moment().subtract(100, 'days');
 
     function cb(startArg, endArg) {
@@ -8,18 +8,18 @@ $(document).ready(function () {
     }
 
     $('#reportrange').daterangepicker({
-        startDate: start,
-        endDate: start,
-        maxDate: start,
+        startDate: yesterday,
+        endDate: yesterday,
+        maxDate: yesterday,
         minDate: minDate,
         ranges: {
-            'Yesterday': [start, start],
-            'Week To Day': [moment().startOf('week'), start],
-            'Month To Day': [moment().startOf('month'), start],
-            'Quarter To Day': [moment().startOf('quarter'), start]
+            'Yesterday': [yesterday, yesterday],
+            'Week To Day': [moment().startOf('week'), yesterday],
+            'Month To Day': [moment().startOf('month'), yesterday],
+            'Quarter To Day': [moment().startOf('quarter'), yesterday]
         }
     }, cb);
-    cb(start, start);
+    cb(yesterday, yesterday);
 
     $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
         // FIRE new request to load data
@@ -27,7 +27,7 @@ $(document).ready(function () {
         serviceTable.ajax.url(url).load();
     });
 
-    var url = ReconView.getContextPath() + '/webapi/orderResults/startDate/' + start.format('YYYYMMDD') + '/endDate/' + start.format('YYYYMMDD');
+    var url = ReconView.getContextPath() + '/webapi/orderResults/startDate/' + yesterday.format('YYYYMMDD') + '/endDate/' + yesterday.format('YYYYMMDD');
 
     var serviceTable = $('#serviceTable').DataTable({
         ajax: {
@@ -40,9 +40,9 @@ $(document).ready(function () {
         //Note: Changing/Adding columns might break functionality. Do it cautiously.
         columns: [
             {data: 'wricef', defaultContent: ''},
+            {data: 'currency'},
             {data: 'source'},
             {data: 'target'},
-            {data: 'currency'},
             {data: 'srcCount', defaultContent: 0},
             {data: 'srcTotal', defaultContent: 0},
             {data: 'srcSuccess', defaultContent: 0},
@@ -50,13 +50,13 @@ $(document).ready(function () {
             {data: 'eisTotal', defaultContent: 0},
             {data: 'eisSuccess', defaultContent: 0},
             {data: 'eisFailure', defaultContent: 0},
-            {data: 'sapTotal', defaultContent: 0},
-            {data: 'sapSuccess', defaultContent: 0},
-            {data: 'sapFailure', defaultContent: 0}
+            {data: 'tgtTotal', defaultContent: 0},
+            {data: 'tgtSuccess', defaultContent: 0},
+            {data: 'tgtFailure', defaultContent: 0}
         ],
         columnDefs: [
             {
-                targets: [0,2],
+                targets: [0,2,3],
                 render: $.fn.dataTable.render.ellipsis(30)
             },{
                 targets: [5,6,7,8,9,10,11,12,13],
@@ -76,7 +76,7 @@ $(document).ready(function () {
                        var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
                        var sDataFormatted = (curSymbol?curSymbol:'') + sData.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 
-                       var errorSrc =  (iCol===7)?'SRC':(iCol===10?'EIS':'SAP');
+                       var errorSrc =  (iCol===7)?'SRC':(iCol===10?'MW':'TGT');
                                            var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
                                                + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors='+errorSrc
                                                + '&currencyCode='+oData.currency+'">' + sDataFormatted + '</a>';
@@ -96,13 +96,32 @@ $(document).ready(function () {
                         }
 
                          var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                                                                         + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SRC'
+                                                                         + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=MW_MISS'
                                                                          + '&currencyCode='+oData.currency+'">' + sDataFormatted + '</a>';
                          $(nTd).html(htmlLink).addClass('warning-cell');
                          $(nTd).attr('title', 'SRC Success is not same as EIS Total');
                      }
                  }
-             }
+             },
+             {
+                  targets: [11],
+                  fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                    if((oData.eisSuccess !== oData.tgtTotal)){
+
+                         var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
+                         var sDataFormatted = (curSymbol?curSymbol:'') + sData.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                         if(oData.eisTotal ===0 ){
+                             sDataFormatted =0;
+                         }
+
+                          var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
+                                                                          + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=TGT_MISS'
+                                                                          + '&currencyCode='+oData.currency+'">' + sDataFormatted + '</a>';
+                          $(nTd).html(htmlLink).addClass('warning-cell');
+                          $(nTd).attr('title', 'MW Success is not same as Target Total');
+                      }
+                  }
+              }
         ],
         language: {
             info: "<strong>_START_</strong>-<strong>_END_</strong> of <strong>_TOTAL_</strong>",

@@ -1,6 +1,7 @@
 package com.wiley;
 
 
+import com.wiley.dao.FulfillmentDAO;
 import com.wiley.dao.OrdersDAO;
 import com.wiley.dao.ProductsDAO;
 import com.wiley.dao.ReconDAO;
@@ -8,6 +9,7 @@ import com.wiley.model.ReconDetailResponse;
 import com.wiley.model.ReconResult;
 import com.wiley.service.UtilService;
 import com.wiley.user.UserDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
@@ -32,6 +35,8 @@ public class ReconController {
 
     private OrdersDAO ordersDAO;
 
+    private FulfillmentDAO fulfilDAO;
+
     private UtilService utilService;
 
     @Autowired
@@ -48,8 +53,18 @@ public class ReconController {
     public void setOrdersDAO(OrdersDAO ordersDAO) {
         this.ordersDAO = ordersDAO;
     }
+    
+/*    
 
+    public FulfillmentDAO getFulfilDAO() {
+		return fulfilDAO;
+	}*/
     @Autowired
+	public void setFulfilDAO(FulfillmentDAO fulfilDAO) {
+		this.fulfilDAO = fulfilDAO;
+	}
+
+	@Autowired
     public void setUtilService(UtilService utilService) {
         this.utilService = utilService;
     }
@@ -100,9 +115,14 @@ public class ReconController {
 
         if (wricef.equals("I0203.1")) {
             return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
-        }else if (ORDER_WRICEFS.contains(wricef)) {
+        }
+        else if (wricef.equals("I0229.1")) {
+            return fulfilDAO.getFulfillmentDetails(sDate, eDate, errorsSrc);
+        }
+        else if (ORDER_WRICEFS.contains(wricef)) {
             return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef, currencyCode);
-        } else {
+        }
+        else {
             response.setErrorFlag(true);
             response.setErrorMsg("Unsupported WRICEF : " + wricef);
             return response;

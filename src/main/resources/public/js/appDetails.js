@@ -4,15 +4,12 @@ $(document).ready(function (ReconView) {
     var sDate = ReconView.getURLParameter('sDate');
     var eDate = ReconView.getURLParameter('eDate');
     var wricef = ReconView.getURLParameter('wricef');
-    var errors = ReconView.getURLParameter('errors');
+    var errorLoc = ReconView.getURLParameter('errors');
     var currencyCode = ReconView.getURLParameter('currencyCode');
 
     //#TODO need to perform validation for all fields
-
-    if (['SRC', 'EIS', 'SAP', 'EIS_MISS', 'SAP_MISS'].indexOf(errors) > -1) {
-        $('#serviceTableHeader span').text(errors);
-    } else {
-        showErrorDialog('Not a valid Error Code. Valid values are SRC, EIS, SAP.');
+    if (['SRC', 'MW', 'TGT', 'MW_MISS', 'TGT_MISS'].indexOf(errorLoc) === -1) {
+        showErrorDialog('Not a valid Error Code. Valid values are SRC, MW, TGT, MW_MISS and TGT_MISS.');
         return;
     }
 
@@ -89,12 +86,12 @@ $(document).ready(function (ReconView) {
             }
         }).container().appendTo($('#serviceTableHeader'));
 
-        setTimeout(function () {
-            $("#serviceDetailsBody").collapse();
-        }, 2000);
+//        setTimeout(function () {
+//            $("#serviceDetailsBody").collapse();
+//        }, 2000);
     });
 
-    var url = ReconView.getContextPath() + '/webapi/details/' + wricef + '/' + errors + '/startDate/' + sDate + '/endDate/' + eDate;
+    var url = ReconView.getContextPath() + '/webapi/details/' + wricef + '/' + errorLoc + '/startDate/' + sDate + '/endDate/' + eDate;
     if (currencyCode) {
         url += '/currencyCode/' + currencyCode;
     }
@@ -108,6 +105,7 @@ $(document).ready(function (ReconView) {
                 showErrorDialog(response.errorMsg);
                 return;
             }
+
             fillDetailsForm(response);
 
             initializeGrid(response.columns, response.data);
@@ -122,6 +120,20 @@ $(document).ready(function (ReconView) {
         formControls[4].textContent = response.target;
         formControls[3].textContent = response.endDate;
         formControls[5].textContent = response.wricef;
+
+        var tempVar ='';
+        if(errorLoc === 'SRC'){
+            tempVar = response.source;
+        }else if(errorLoc === 'TGT'){
+            tempVar = response.target;
+        }else if(errorLoc === 'MW'){
+            tempVar = 'Middleware';
+        }else if(errorLoc === 'MW_MISS'){
+            tempVar = 'Middleware Missing Transactions';
+        }else if(errorLoc === 'TGT_MISS'){
+            tempVar = 'Target Missing Transaction';
+        }
+       $('#serviceTableHeader span').text(tempVar);
     }
 
     function showErrorDialog(text) {
@@ -141,7 +153,7 @@ $(document).ready(function (ReconView) {
     function initializeGrid(columns, data) {
 
         //Create FilterRow before initialization,
-        //otherwise the filterrow is getting removed when table redrawn
+        //otherwise the filterrow is getting removed when table redrawn.(As this is a Dynamic Grid)
 
         var trow ='<tr>';
         var trow2 ='<tr id="filterrow" style="display: none;">';

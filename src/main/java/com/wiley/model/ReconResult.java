@@ -22,9 +22,11 @@ public class ReconResult {
     private int eisTotal;
     private int eisSuccess;
     private int eisFailure;
-    private int sapTotal;
-    private int sapSuccess;
-    private int sapFailure;
+    private int tgtTotal;
+    private int tgtSuccess;
+    private int tgtFailure;
+    private int eisMissing;
+    private int tgtMissing;
 
     @Override
     public boolean equals(Object o) {
@@ -54,9 +56,9 @@ public class ReconResult {
                 ", eisTotal=" + eisTotal +
                 ", eisSuccess=" + eisSuccess +
                 ", eisFailure=" + eisFailure +
-                ", sapTotal=" + sapTotal +
-                ", sapSuccess=" + sapSuccess +
-                ", sapFailure=" + sapFailure +
+                ", sapTotal=" + tgtTotal +
+                ", sapSuccess=" + tgtSuccess +
+                ", sapFailure=" + tgtFailure +
                 ", flowDirection=" + flowDirection +
                 '}';
     }
@@ -165,28 +167,28 @@ public class ReconResult {
         this.eisFailure = eisFailure;
     }
 
-    public int getSapTotal() {
-        return sapTotal;
+    public int getTgtTotal() {
+        return tgtTotal;
     }
 
-    public void setSapTotal(int sapTotal) {
-        this.sapTotal = sapTotal;
+    public void setTgtTotal(int sapTotal) {
+        this.tgtTotal = sapTotal;
     }
 
-    public int getSapSuccess() {
-        return sapSuccess;
+    public int getTgtSuccess() {
+        return tgtSuccess;
     }
 
-    public void setSapSuccess(int sapSuccess) {
-        this.sapSuccess = sapSuccess;
+    public void setTgtSuccess(int sapSuccess) {
+        this.tgtSuccess = sapSuccess;
     }
 
-    public int getSapFailure() {
-        return sapFailure;
+    public int getTgtFailure() {
+        return tgtFailure;
     }
 
-    public void setSapFailure(int sapFailure) {
-        this.sapFailure = sapFailure;
+    public void setTgtFailure(int sapFailure) {
+        this.tgtFailure = sapFailure;
     }
 
     public String getFlowDirection() {
@@ -219,5 +221,22 @@ public class ReconResult {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
+
+	public int getEisMissing() {
+		return eisMissing;
+	}
+
+	public void setEisMissing(int eisMissing) {
+		this.eisMissing = eisMissing;
+	}
+
+	public int getTgtMissing() {
+		return tgtMissing;
+	}
+
+	public void setTgtMissing(int tgtMissing) {
+		this.tgtMissing = tgtMissing;
+	}
+    
 
 }

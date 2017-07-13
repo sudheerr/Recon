@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
 
-    var start = moment().subtract(1, 'days');
-    var end = moment();
+    var yesterday = moment().subtract(1, 'days');
+    //var end = moment();
     var minDate = moment().subtract(100, 'days');
 
     function cb(startArg, endArg) {
@@ -10,9 +10,9 @@ $(document).ready(function () {
     }
 
     $('#reportrange').daterangepicker({
-        startDate: start,
-        endDate: start,
-        maxDate: start,
+        startDate: yesterday,
+        endDate: yesterday,
+        maxDate: yesterday,
         minDate: minDate,
         // dateLimit: {
         //     days: 6
@@ -21,13 +21,13 @@ $(document).ready(function () {
         //     customRangeLabel: 'Custom Range (Max 7 days)'
         // },
         ranges: {
-            'Yesterday': [start, start],
-            'Week To Day': [moment().startOf('week'), start],
-            'Month To Day': [moment().startOf('month'), start],
-            'Quarter To Day': [moment().startOf('quarter'), start]//TODO Change to financial Quarter
+            'Yesterday': [yesterday, yesterday],
+            'Week To Day': [moment().startOf('week'), yesterday],
+            'Month To Day': [moment().startOf('month'), yesterday],
+            'Quarter To Day': [moment().startOf('quarter'), yesterday]//TODO Change to financial Quarter
         }
     }, cb);
-    cb(start, start);
+    cb(yesterday, yesterday);
 
     $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
         // FIRE new request to load data
@@ -35,7 +35,7 @@ $(document).ready(function () {
         serviceTable.ajax.url(url).load();
     });
 
-    var url = ReconView.getContextPath() + '/webapi/results/startDate/' + start.format('YYYYMMDD') + '/endDate/' + start.format('YYYYMMDD');
+    var url = ReconView.getContextPath() + '/webapi/results/startDate/' + yesterday.format('YYYYMMDD') + '/endDate/' + yesterday.format('YYYYMMDD');
 
     var serviceTable = $('#serviceTable').DataTable({
         ajax: {
@@ -49,28 +49,30 @@ $(document).ready(function () {
         pageLength: 25,
         fixedColumns: true,
         columns: [
-            // Changing or Adding columns will break functionality. Do it Cautiously.
-            {data: 'wricef', defaultContent: ''},
-            {data: 'source', width: '120px'},
-            {data: 'target'},
-            {data: 'interfaceName'},
+            // Changing or Adding columns will break functionality. Do it Cautiously!!!
+            {data: 'wricef', width: '40px'},
+            {data: 'source', width: '75px'},
+            {data: 'target', width: '40px'},
+            {data: 'interfaceName', width: '80px'},
             {data: 'srcTotal', defaultContent: ''},
             {data: 'srcSuccess', defaultContent: ''},
             {data: 'srcFailure', defaultContent: ''},
             {data: 'eisTotal', defaultContent: ''},
+            {data: 'eisMissing', defaultContent: ''},
             {data: 'eisSuccess', defaultContent: ''},
             {data: 'eisFailure', defaultContent: ''},
-            {data: 'sapTotal', defaultContent: ''},
-            {data: 'sapSuccess', defaultContent: ''},
-            {data: 'sapFailure', defaultContent: ''}
+            {data: 'tgtTotal', defaultContent: ''},
+            {data: 'tgtMissing', defaultContent: ''},
+            {data: 'tgtSuccess', defaultContent: ''},
+            {data: 'tgtFailure', defaultContent: ''}
         ],
         columnDefs: [{
-            "targets": [6, 9, 12],
+            "targets": [6, 10, 14],
             className: 'dt-right',
             fnCreatedCell: function (nTd,
                                      sData, oData, iRow, iCol) {
                 if (sData > 0) {
-                    var errorSrc = (iCol === 6) ? 'SRC' : (iCol === 9 ? 'EIS' : 'SAP');
+                    var errorSrc = (iCol === 6) ? 'SRC' : (iCol === 10 ? 'MW' : 'TGT');
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
                         + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=' + errorSrc + '">' + sData + '</a>';
                     $(nTd).html(htmlLink).addClass('error-cell');
@@ -80,31 +82,30 @@ $(document).ready(function () {
             targets: [1, 3],
             render: $.fn.dataTable.render.ellipsis(30)
         }, {
-            targets: [4, 5, 8, 11, 10],
+            targets: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
             className: 'dt-right'
         }, {
-            targets: [7],
-            className: 'dt-right',
+            targets: [8],
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                if ((oData.srcSuccess !== oData.eisTotal)) {
+                if ((oData.srcSuccess !== oData.eisTotal) && (oData.srcSuccess+oData.srcFailure !== oData.eisTotal) ) {
+
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=EIS_MISS">' + sData + '</a>';
+                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=MW_MISS">' + sData + '</a>';
 
                     $(nTd).html(htmlLink).addClass('warning-cell');
-                    $(nTd).attr('title', 'SRC Success is not same as EIS Total');
+                    $(nTd).attr('title', 'SRC Success is not same as MW Total');
                 }
             }
         }, {
-            targets: [10],
-            className: 'dt-right',
+            targets: [12],
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                if ((oData.eisSuccess !== oData.sapTotal)) {
+                if ((oData.eisSuccess !== oData.tgtTotal) && (oData.eisSuccess+oData.eisFailure !== oData.tgtTotal)) {
 
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
-                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=SAP_MISS">' + sData + '</a>';
+                        + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=TGT_MISS">' + sData + '</a>';
 
                     $(nTd).html(htmlLink).addClass('warning-cell');
-                    $(nTd).attr('title', 'EIS Success is not same as SAP Total');
+                    $(nTd).attr('title', 'MW Success is not same as Target Total');
 
                 }
             }

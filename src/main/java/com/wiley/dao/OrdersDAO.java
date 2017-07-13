@@ -63,7 +63,7 @@ public class OrdersDAO extends GenericDAO{
             return null;
         }
 
-        final String temperrorSrc =  errorSrc.equals("SRC")||errorSrc.equals("EIS_MISS")?"":errorSrc.equals("SAP_MISS")?"EIS":errorSrc;
+        final String temperrorSrc =  errorSrc.equals("MW_MISS")?"SRC":errorSrc.equals("TGT_MISS")?"MW":errorSrc;
 
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
         simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("recon_order_pkg").withProcedureName("recon_order_errors");
@@ -79,12 +79,14 @@ public class OrdersDAO extends GenericDAO{
                 Date createDate = rs.getDate("CORE_CREATED_DATE");
                 String createDateStr = createDate != null ? SDF.format(createDate) : "";
 
-                return new UIRow(rs.getString("CORE_ORDNUM"),
+                return new UIRow(rs.getString("SRC_ORDNUM"),
                         createDateStr,
                         rs.getString("CURRENCY_CODE"),
                         rs.getString("TOTAL_PRICE"),
-                        temperrorSrc.equals("")?"":rs.getString(temperrorSrc+"_STATUS_CODE"),
-                        temperrorSrc.equals("")?"":rs.getString(temperrorSrc+"_STATUS_MSG")
+                        rs.getString(temperrorSrc+"_STATUS_CODE"),
+                        rs.getString(temperrorSrc+"_STATUS_MSG"),
+                        null,
+                        rs.getString("CURRENCY_CODE")
                 );
             }
         }));
@@ -101,9 +103,9 @@ public class OrdersDAO extends GenericDAO{
         columns.add(new UIColumn("Sub Order Ref Number","field1",""));
         columns.add(new UIColumn("Posted Date","field2",""));
         columns.add(new UIColumn("Currency Code","field3",""));
-        columns.add(new UIColumn("Total Order Price","field4","dt-right", ColumnType.CURRENCY));
-        columns.add(new UIColumn("Error Code","field5",""));
-        columns.add(new UIColumn("Error Message","field6",""));
+        columns.add(new UIColumn("Total Order Value","field4","dt-right", ColumnType.CURRENCY));
+        columns.add(new UIColumn("Status Code","field5",""));
+        columns.add(new UIColumn("Status Message","field6",""));
 
         return getUtilService().createResponse(columns, rows, SDF.format(startDate),
                 SDF.format(endDate), interfaceName,
