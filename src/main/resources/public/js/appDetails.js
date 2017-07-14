@@ -123,15 +123,17 @@ $(document).ready(function (ReconView) {
 
         var tempVar ='';
         if(errorLoc === 'SRC'){
-            tempVar = response.source;
+            tempVar = response.source + ' Error Report';
         }else if(errorLoc === 'TGT'){
-            tempVar = response.target;
+            tempVar = response.target + ' Error Report';
         }else if(errorLoc === 'MW'){
-            tempVar = 'Middleware';
+            tempVar = 'Middleware Error Report';
         }else if(errorLoc === 'MW_MISS'){
-            tempVar = 'Middleware Missing Transactions';
+            tempVar = 'Middleware Missing Transaction Report';
+            formControls[4].textContent = 'Middleware';
         }else if(errorLoc === 'TGT_MISS'){
-            tempVar = 'Target Missing Transaction';
+            tempVar = response.target + ' Missing Transaction Report';
+            formControls[1].textContent = 'Middleware';
         }
        $('#serviceTableHeader span').text(tempVar);
     }

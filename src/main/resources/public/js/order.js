@@ -3,6 +3,8 @@ $(document).ready(function () {
     //var end = moment();
     var minDate = moment().subtract(100, 'days');
 
+
+
     function cb(startArg, endArg) {
         $('#reportrange span').html(startArg.format('MMMM D, YYYY') + ' - ' + endArg.format('MMMM D, YYYY'));
     }
@@ -16,7 +18,7 @@ $(document).ready(function () {
             'Yesterday': [yesterday, yesterday],
             'Week To Day': [moment().startOf('week'), yesterday],
             'Month To Day': [moment().startOf('month'), yesterday],
-            'Quarter To Day': [moment().startOf('quarter'), yesterday]
+            'Quarter To Day': [ReconView.getFinancialQuarter(), yesterday]
         }
     }, cb);
     cb(yesterday, yesterday);
@@ -39,27 +41,30 @@ $(document).ready(function () {
         pageLength: 25,
         //Note: Changing/Adding columns might break functionality. Do it cautiously.
         columns: [
-            {data: 'wricef', defaultContent: ''},
-            {data: 'currency'},
+            {data: 'wricef', defaultContent: '', name: 'first'},
             {data: 'source'},
             {data: 'target'},
+            {data: 'interfaceName', width: '80px'},
+            {data: 'currency'},
             {data: 'srcCount', defaultContent: 0},
             {data: 'srcTotal', defaultContent: 0},
             {data: 'srcSuccess', defaultContent: 0},
             {data: 'srcFailure', defaultContent: 0},
             {data: 'eisTotal', defaultContent: 0},
+            {data: 'eisMissing', defaultContent: ''},
             {data: 'eisSuccess', defaultContent: 0},
             {data: 'eisFailure', defaultContent: 0},
             {data: 'tgtTotal', defaultContent: 0},
+            {data: 'tgtMissing', defaultContent: 0},
             {data: 'tgtSuccess', defaultContent: 0},
             {data: 'tgtFailure', defaultContent: 0}
         ],
         columnDefs: [
             {
-                targets: [0,2,3],
+                targets: [0,2,3,4],
                 render: $.fn.dataTable.render.ellipsis(30)
             },{
-                targets: [5,6,7,8,9,10,11,12,13],
+                targets: [6,7,8,9,10,11,12,13,14,15,16],
                 className: 'dt-right',
                 render: function (data, type, row) {
                     if(data>0){
@@ -70,7 +75,7 @@ $(document).ready(function () {
                 }
             },
             {
-                targets: [7,10,13],
+                targets: [8,12,16],
                 fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                     if (sData > 0) {
                        var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
@@ -85,13 +90,13 @@ $(document).ready(function () {
                 }
             },
             {
-                 targets: [8],
+                 targets: [10],
                  fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                   if((oData.srcSuccess !== oData.eisTotal)){
+                   if(oData.eisMissing > 0 ){
 
                         var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
                         var sDataFormatted = (curSymbol?curSymbol:'') + sData.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-                        if(oData.eisTotal ===0 ){
+                        if(oData.eisMissing ===0 ){
                             sDataFormatted =0;
                         }
 
@@ -104,13 +109,13 @@ $(document).ready(function () {
                  }
              },
              {
-                  targets: [11],
+                  targets: [14],
                   fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                    if((oData.eisSuccess !== oData.tgtTotal)){
+                    if(oData.tgtMissing > 0 ){
 
                          var curSymbol = ReconView.getSymbolFromCurrency(oData.currency);
                          var sDataFormatted = (curSymbol?curSymbol:'') + sData.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-                         if(oData.eisTotal ===0 ){
+                         if(oData.tgtMissing ===0 ){
                              sDataFormatted =0;
                          }
 
@@ -133,6 +138,9 @@ $(document).ready(function () {
             }
         },
         lengthChange: false,
+        rowsGroup: [
+            'first:name', 0,1,2,3
+        ],
         footerCallback: function (row, data, start, end, display) {
             var api = this.api(), data;
 
@@ -145,7 +153,7 @@ $(document).ready(function () {
             };
 
             //#FIXME Not correct as value is in different currencies.
-            for (var i = 5; i <= 13; i++) {
+            for (var i = 6; i <= 16; i++) {
                 var total = api
                     .column(i)
                     .data()

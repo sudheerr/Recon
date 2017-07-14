@@ -29,17 +29,18 @@ import static com.wiley.ApplicationConstants.ORDER_WRICEFS;
 public class ReconController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReconController.class);
 
+    @Autowired
     private ReconDAO reconDAO;
-
+    @Autowired
     private ProductsDAO productsDAO;
-
+    @Autowired
     private OrdersDAO ordersDAO;
-
+    @Autowired
     private FulfillmentDAO fulfilDAO;
-
+    @Autowired
     private UtilService utilService;
 
-    @Autowired
+/*    @Autowired
     public void setReconDAO(ReconDAO reconDAO) {
         this.reconDAO = reconDAO;
     }
@@ -54,20 +55,21 @@ public class ReconController {
         this.ordersDAO = ordersDAO;
     }
     
-/*    
+    
 
     public FulfillmentDAO getFulfilDAO() {
 		return fulfilDAO;
-	}*/
+	}
     @Autowired
 	public void setFulfilDAO(FulfillmentDAO fulfilDAO) {
 		this.fulfilDAO = fulfilDAO;
 	}
 
+
 	@Autowired
     public void setUtilService(UtilService utilService) {
         this.utilService = utilService;
-    }
+    }*/
 
     /**
      * @param startDate YYYYMMDD
@@ -117,7 +119,10 @@ public class ReconController {
             return productsDAO.getProductDetails(sDate, eDate, errorsSrc);
         }
         else if (wricef.equals("I0229.1")) {
-            return fulfilDAO.getFulfillmentDetails(sDate, eDate, errorsSrc);
+            return fulfilDAO.getFulfillmentDetails(sDate, eDate, errorsSrc,"request");
+        }
+        else if (wricef.equals("I0318.2")) {
+            return fulfilDAO.getFulfillmentDetails(sDate, eDate, errorsSrc,"response");
         }
         else if (ORDER_WRICEFS.contains(wricef)) {
             return ordersDAO.getOrderDetails(sDate, eDate, errorsSrc, wricef, currencyCode);

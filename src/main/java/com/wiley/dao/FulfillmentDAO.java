@@ -30,7 +30,7 @@ public class FulfillmentDAO extends GenericDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FulfillmentDAO.class);
 
-    public ReconDetailResponse getFulfillmentDetails(Timestamp startDate, Timestamp endDate, final String errorSrc){
+    public ReconDetailResponse getFulfillmentDetails(Timestamp startDate, Timestamp endDate, final String errorSrc, String fulfilType){
 
         LOGGER.info("parameters passed : startDate = [" + startDate + "], endDate = [" + endDate + "], errorSrc = [" + errorSrc + "]");
 
@@ -38,7 +38,14 @@ public class FulfillmentDAO extends GenericDAO {
 
 
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(getJdbcTemplate());
-        simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("RECON_FULFLMNT_PKG").withProcedureName("RECON_FULFLMNT_ERRORS");
+        if(fulfilType.equals("request"))
+        {
+        	simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("RECON_FULFLMNT_PKG").withProcedureName("RECON_FULFLMNT_ERRORS");
+        }
+        else if(fulfilType.equals("response"))
+        {
+        	simpleJdbcCall.withSchemaName(EISRECON).withCatalogName("RECON_FULFLMNT_PKG").withProcedureName("RECON_FULFLMNT_RESP_ERRORS");
+        }
 
         simpleJdbcCall.declareParameters(new SqlParameter(START_DATE, OracleTypes.TIMESTAMP));
         simpleJdbcCall.declareParameters(new SqlParameter(END_DATE, OracleTypes.TIMESTAMP));
@@ -75,8 +82,16 @@ public class FulfillmentDAO extends GenericDAO {
         columns.add(new UIColumn("Status Message","field5",""));
 
         // Needs changes below ***
+        if(fulfilType.equals("response"))
+        {
+            return  getUtilService().createResponse(columns, rows, SDF.format(startDate), SDF.format(endDate),
+                    "UpdateEntitlementStatusFromALM", "ALM", "SAP", "I0318.2");
+        }
+        else
+        {
         return  getUtilService().createResponse(columns, rows, SDF.format(startDate), SDF.format(endDate),
-                        "UpdateProductMasterInbound", "JANIS", "SAP", "I0203.1");
+                        "UpdateOutboundOrderAckToALM", "SAP", "ALM", "I0229.1");
+        }
     }
 
 }

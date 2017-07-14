@@ -24,7 +24,7 @@ $(document).ready(function () {
             'Yesterday': [yesterday, yesterday],
             'Week To Day': [moment().startOf('week'), yesterday],
             'Month To Day': [moment().startOf('month'), yesterday],
-            'Quarter To Day': [moment().startOf('quarter'), yesterday]//TODO Change to financial Quarter
+            'Quarter To Day': [ReconView.getFinancialQuarter(), yesterday]
         }
     }, cb);
     cb(yesterday, yesterday);
@@ -87,7 +87,7 @@ $(document).ready(function () {
         }, {
             targets: [8],
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                if ((oData.srcSuccess !== oData.eisTotal) && (oData.srcSuccess+oData.srcFailure !== oData.eisTotal) ) {
+                if (oData.eisMissing > 0) {
 
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
                         + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=MW_MISS">' + sData + '</a>';
@@ -99,7 +99,8 @@ $(document).ready(function () {
         }, {
             targets: [12],
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                if ((oData.eisSuccess !== oData.tgtTotal) && (oData.eisSuccess+oData.eisFailure !== oData.tgtTotal)) {
+
+                if (oData.tgtMissing > 0) {
 
                     var htmlLink = '<a target="_blank" href="recon-detail.html?sDate=' + oData.startDate
                         + '&eDate=' + oData.endDate + '&wricef=' + oData.wricef + '&errors=TGT_MISS">' + sData + '</a>';
